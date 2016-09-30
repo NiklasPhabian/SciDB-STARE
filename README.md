@@ -1,5 +1,5 @@
 
 # SciDB-HSTM
 
-Integrating HSTM with SciDB.
+Integrating HSTM with SciDB. All rights reserved.
 
