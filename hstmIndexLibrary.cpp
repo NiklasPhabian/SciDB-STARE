@@ -129,8 +129,8 @@ static void indexFromHstm (const scidb::Value** args, scidb::Value* res, void* v
   int status = hIndex.range->getNext(&lo,&hi);
   EmbeddedLevelNameEncoding leftJustified = EmbeddedLevelNameEncoding(lo);
   int64 leftID = leftJustified.getSciDBLeftJustifiedFormat();
-  LOG4CXX_DEBUG(logger, L"hstm::indexFromHstm lo     " << hex << (lo) << dec);
-  LOG4CXX_DEBUG(logger, L"hstm::indexFromHstm leftID " << hex << (leftID) << dec);
+  // LOG4CXX_DEBUG(logger, L"hstm::indexFromHstm lo     " << hex << (lo) << dec);
+  // LOG4CXX_DEBUG(logger, L"hstm::indexFromHstm leftID " << hex << (leftID) << dec);
   res->setInt64(leftID);
 }
 static void hstmFromIndex (const scidb::Value** args, scidb::Value* res, void* v) {
@@ -258,24 +258,22 @@ static void hstmIdToLevel (const scidb::Value** args, scidb::Value* res, void* v
     range->reset();
     range->getNext(lo,hi);
     LOG4CXX_DEBUG(logger, L"hstm::idToLevel lo,hi 1 " << lo << " " << hi);
-    if(lo != 0){
-      level = levelOfId(lo); // TODO handle difference between range and id
+
+    EmbeddedLevelNameEncoding lo_left(lo);
+    EmbeddedLevelNameEncoding lo_left_new = lo_left.atLevel(newLevel);
+    lo = lo_left_new.getId();
+
+    EmbeddedLevelNameEncoding hi_left(hi);
+    EmbeddedLevelNameEncoding hi_left_new = hi_left.atLevel(newLevel);
+
+    if(!hi_left.terminatorp()) { // If this is a terminator, noop.
+      hi = hi_left_new.getId();
+    } else {
+      hi = hi_left_new.getIdTerminator_NoDepthBit();
     }
 
-    // TODO Assume RightJustified
-    if( level != newLevel ) {
-      if( newLevel > level ) {
-	lo = lo << (2*( newLevel - level ));
-	hi = hi << (2*( newLevel - level ));
-      } else {
-	lo = lo >> (2*( level - newLevel ));
-	hi = hi >> (2*( level - newLevel ));
-      }
-    }
-    LOG4CXX_DEBUG(logger, L"hstm::idToLevel lo,hi 2 " << lo << " " << hi);
   }
 
-  // TODO Let's assume for now HtmRange is in rightJustified for now.
   HstmIndex *newIndex;
   if( lo != 0 ) {
     newIndex = new HstmIndex(lo,hi);
@@ -298,20 +296,22 @@ static void hstmEQ (const scidb::Value** args, scidb::Value* res, void* v) {
   res->setBool(hIndex0.equalp(&hIndex1));
 
 }
-// static void hstmNE (const scidb::Value** args, scidb::Value* res, void* v) {}
-// static void hstmEqualToLevel (const scidb::Value** args, scidb::Value* res, void* v) {}
-// 
-// /// Make a new hstmIndex from an int64.  A lot like construct... below.
-static void int64ToHstm (const scidb::Value** args, scidb::Value* res, void* v) {
-  int     iarg       = 0;
-  int64_t id         = args[iarg++]->getInt64(); // uint64?
-  HstmIndex *hIndex = new HstmIndex;
-  LOG4CXX_DEBUG(logger, L"hstm::int64ToHstm " << 999);
-  if( id != 0 ) {
-    hIndex->range->addRange(id,id);
-  }
-  *(HstmIndex*)res->data() = *hIndex;
-}
+// The following has a problem in that int64 is not really a scidb index, there's a bit or two missing.
+//
+// // // // static void hstmNE (const scidb::Value** args, scidb::Value* res, void* v) {}
+// // // // static void hstmEqualToLevel (const scidb::Value** args, scidb::Value* res, void* v) {}
+// // // // 
+// // // // /// Make a new hstmIndex from an int64.  A lot like construct... below.
+// // // static void int64ToHstm (const scidb::Value** args, scidb::Value* res, void* v) {
+// // //   int     iarg       = 0;
+// // //   int64_t id         = args[iarg++]->getInt64(); // uint64?
+// // //   HstmIndex *hIndex = new HstmIndex;
+// // //   LOG4CXX_DEBUG(logger, L"hstm::int64ToHstm " << 999);
+// // //   if( id != 0 ) {
+// // //     hIndex->range->addRange(id,id);
+// // //   }
+// // //   *(HstmIndex*)res->data() = *hIndex;
+// // // }
 // 
 void hstm::stringToHstm (const scidb::Value** args, scidb::Value* res, void* v) {
   // TODO Add some smarts to stringToHstm. Strings could be symbolic or hex...
@@ -351,7 +351,7 @@ static void hstmToString (const scidb::Value** args, scidb::Value* res, void* v)
   LOG4CXX_DEBUG(logger, L"hstm::hstmToString " << 997);
 }
 
-// 
+// // TODO Somehow we're going to have to add a way to get int64 hstm, as opposed to scidb indexes
 static void hstmToInt64 (const scidb::Value** args, scidb::Value* res, void* v) {
   HstmIndex& hIndex = *(HstmIndex*)args[0]->data();
   HtmRangeMultiLevel   *range = hIndex.range;
@@ -430,13 +430,16 @@ static void constructHstmIndexFromInt64 (const scidb::Value** args, scidb::Value
   LOG4CXX_DEBUG(logger, L"hstm::constructHstmIndexFromInt64 " << 999);
   LOG4CXX_DEBUG(logger, L"hstm::constructHstmIndexFromInt64 " << id);
 
-  HstmIndex *hIndex;
+  // See also hstmFromIndex.
+
+  HstmIndex *hIndex = new HstmIndex;
   if( id != 0 ) {
-    hIndex = new HstmIndex(id);
-    // *(HstmIndex*)res->data() = HstmIndex(id);
-  } else {
-    hIndex = new HstmIndex;
-    // *(HstmIndex*)res->data() = HstmIndex();
+    
+    EmbeddedLevelNameEncoding left;
+    left.setIdFromSciDBLeftJustifiedFormat(id);
+
+    hIndex->range->addRange(left.getId_NoLevelBit());
+
   }
   *(HstmIndex*)res->data() = *hIndex;
   LOG4CXX_DEBUG(logger, L"hstm::constructHstmIndexFromInt64 " << 100);
@@ -449,11 +452,14 @@ static void constructHstmIndexFromInt642 (const scidb::Value** args, scidb::Valu
 
   HstmIndex *hIndex = new HstmIndex;
 
+  EmbeddedLevelNameEncoding lo_left; lo_left.setIdFromSciDBLeftJustifiedFormat(lo);
+  EmbeddedLevelNameEncoding hi_left; hi_left.setIdFromSciDBLeftJustifiedFormat(hi);
+
   if( lo != 0 && hi != 0 ) {
     if(lo<=hi) {
-      hIndex->range->addRange(lo,hi);
+      hIndex->range->addRange(lo_left.getId_NoLevelBit(),hi_left.getId_NoLevelBit());
     } else {
-      hIndex->range->addRange(hi,lo);
+      hIndex->range->addRange(hi_left.getId_NoLevelBit(),lo_left.getId_NoLevelBit());
     }
   }
   *(HstmIndex*)res->data() = *hIndex;
@@ -482,8 +488,12 @@ static void constructHstmIndexFromStringSymbol (const scidb::Value** args, scidb
 
 // //  void xxx (const scidb::Value** args, scidb::Value* res, void* v) {}
 // 
-REGISTER_CONVERTER(int64,hstm,IMPLICIT_CONVERSION_COST,int64ToHstm);
-REGISTER_CONVERTER(hstm,int64,IMPLICIT_CONVERSION_COST,hstmToInt64);
+// TODO Keep track of 64-bit version vs. 63-bit version.
+// REGISTER_CONVERTER(int64,hstm,IMPLICIT_CONVERSION_COST,int64ToHstm);
+// REGISTER_CONVERTER(hstm,int64,IMPLICIT_CONVERSION_COST,hstmToInt64);
+
+REGISTER_CONVERTER(int64,hstm,IMPLICIT_CONVERSION_COST,hstmFromIndex);
+REGISTER_CONVERTER(hstm,int64,IMPLICIT_CONVERSION_COST,hstmToInt64); // TODO move this from Int64 to Index
 REGISTER_CONVERTER(string,hstm,EXPLICIT_CONVERSION_COST,stringToHstm);
 REGISTER_CONVERTER(hstm,string,EXPLICIT_CONVERSION_COST,hstmToString);
 // 
@@ -512,7 +522,6 @@ public:
     Type hstmType("hstm",sizeof(HstmIndex)*8); // size in bits
     _types.push_back(hstmType);
 
-    
 
 // Functions registered with SciDB.
 // void funX(const scidb::Value** args, scidb::Value* res, void*) {}
@@ -539,6 +548,9 @@ public:
    // calculate an int64 index
    _functionDescs.push_back(FunctionDescription("indexFromHstm",list_of("hstm"),TID_INT64,&indexFromHstm));
    _functionDescs.push_back(FunctionDescription("hstmFromIndex",list_of(TID_INT64),TypeId("hstm"),&hstmFromIndex));
+
+   _functionDescs.push_back(FunctionDescription("stringFromHstm",list_of("hstm"),TID_STRING,&hstmToString));
+
 // 
 // // intersect a b => a.intersect(b)
 // // REGISTER_FUNCTION(intersect,list_of("hstm")("hstm"),"bool",hstmIntersect);
