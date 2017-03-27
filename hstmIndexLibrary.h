@@ -18,6 +18,8 @@
 #include "query/TypeSystem.h"
 #include "system/ErrorsLibrary.h"
 
+#include "SciDBAPI.h"
+
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 

@@ -1,12 +1,22 @@
 
 .PHONY: tests echo
 
-BOOST_LOCATION=/opt/scidb/15.7/3rdparty/boost_1_54_0
+# # Original configuration for 15.7
+# BOOST_LOCATION=/opt/scidb/15.7/3rdparty/boost_1_54_0
+# BOOST_INCLUDE=${BOOST_LOCATION}/include
+# BOOST_LIB=${BOOST_LOCATION}/lib
+# # BOOST_INCLUDE=/opt/scidb/15.7/3rdparty/boost_1_54_0/
+# # SCIDB_SOURCE_DIR=/home/mrilee/src/scidb-15.7.0.9267
+# SCIDB_SOURCE_DIR=/opt/scidb/15.7
+
+# /opt/scidb/16.9/3rdparty
+
+ALT_BASE=/home/mrilee/nobackup
+BOOST_LOCATION=${ALT_BASE}/opt/scidb/16.9/3rdparty/boost_1_54_0
 BOOST_INCLUDE=${BOOST_LOCATION}/include
 BOOST_LIB=${BOOST_LOCATION}/lib
-# BOOST_INCLUDE=/opt/scidb/15.7/3rdparty/boost_1_54_0/
-# SCIDB_SOURCE_DIR=/home/mrilee/src/scidb-15.7.0.9267
-SCIDB_SOURCE_DIR=/opt/scidb/15.7
+SCIDB_SOURCE_DIR=${ALT_BASE}/opt/scidb/16.9
+
 
 HSTM_DIR=/home/mrilee/git/hstm
 
