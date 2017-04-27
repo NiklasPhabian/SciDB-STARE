@@ -1,0 +1,38 @@
+#!/bin/bash
+
+export SciDBVer=16.9
+
+echo Stop the test clusters.
+touch /home/scidb/mrilee/Cluster32All/bin/last-stop-attempt
+ls -l /home/scidb/mrilee/Cluster32All/bin/last-stop-attempt
+
+# Safety exit
+export expectedHost="scidb32"
+if [[ $(hostname -s) != ${expectedHost} ]]; then 
+   echo Executing on wrong cluster, found: $(hostname -s), expected: ${expectedHost}. Exiting.
+   exit
+fi
+
+source managed-hosts
+
+# source /home/scidb/.scidbrc
+source /home/scidb/mrilee/Cluster32All/bin/config-${SciDBVer}
+
+# echo unloading...
+# for clusterPort in 1439 1239; do 
+#     echo processing ${clusterPort}
+#     iquery --port ${clusterPort} -aq "unload_library('hstmIndexLibrary');"
+# done
+
+
+echo stopping...
+for clusterName in ${clusterNames}; do 
+    echo processing ${clusterName}
+    scidb.py stopall ${clusterName}
+done
+
+# echo next step...
+# echo ./update-libraries
+
+echo done
+

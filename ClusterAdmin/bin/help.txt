@@ -1,0 +1,68 @@
+
+;; -*- Mode: Emacs-lisp; -*-
+
+Notes on how to run these scripts.
+
+1. The following order should work.
+
+./backup-plugins
+./unload-and-stop
+./update-libraries
+./start-and-load
+
+# Try C-xC-j.
+
+(switch-to-buffer-other-window "*Messages*")
+
+(shell-command-to-string "pwd")
+(shell-command-to-string "ls")
+(shell-command-to-string "scidb.py")
+
+(shell-command-to-string "yes | scidb.py initall mike")
+
+(shell-command-to-string "/home/scidb/mrilee/Cluster32All/bin/check-hstm 1239")
+(shell-command-to-string "/home/scidb/mrilee/Cluster32All/bin/check-hstm 1439")
+(shell-command-to-string "/home/scidb/mrilee/Cluster32All/bin/check-hstm 1539")
+
+(shell-command-to-string "/home/scidb/mrilee/Cluster32All/bin/backup-plugins")
+(shell-command-to-string "/home/scidb/mrilee/Cluster32All/bin/unload-and-stop")
+(shell-command-to-string "/home/scidb/mrilee/Cluster32All/bin/update-libraries")
+(shell-command-to-string "/home/scidb/mrilee/Cluster32All/bin/start-and-load")
+
+(shell-command-to-string "/home/scidb/mrilee/Cluster32All/bin/initial-load")
+
+;;; Most used
+(shell-command-to-string 
+"date; cd /home/scidb/mrilee/Cluster32All/bin; ./unload-and-stop; ./update-libraries; ./start-and-load;")
+
+(shell-command-to-string 
+ "cd /home/scidb/mrilee/Cluster32All/bin; ./stop; ./start;")
+
+(shell-command-to-string "/home/scidb/mrilee/Cluster32All/bin/stop")
+(shell-command-to-string "/home/scidb/mrilee/Cluster32All/bin/start")
+
+
+(shell-command-to-string "iquery -p 1239 -aq \"list('arrays');\"")
+(shell-command-to-string "iquery -p 1439 -aq \"list('arrays');\"")
+
+(shell-command-to-string "iquery -p 1239 -aq \"list('libraries');\"")
+(shell-command-to-string "iquery -p 1439 -aq \"list('libraries');\"")
+(shell-command-to-string "iquery -p 1539 -aq \"list('libraries');\"")
+
+
+(shell-command-to-string "cd /home/scidb/mrilee/Cluster32All/bin; ./stop; ./start;")
+
+(find-file-other-window "/att/scidb/data01/db_mike1_169/0/0/scidb.log")
+
+(find-file-other-window "/home/scidb/mrilee/Cluster32All/bin")
+
+(find-file-other-window "/opt/scidb/16.9/etc/config.ini")
+(find-file-other-window "/opt/scidb/16.9/share/scidb/log4cxx.properties")
+
+(find-file-other-window "/att/scidb/data01/")
+
+(find-file-other-window "/att/scidb/data01/db_mike1_169")
+(find-file-other-window "/att/scidb/data01/db_mike1_169/0/0/")
+(find-file-other-window "/att/scidb/data01/db_mike1_169/0/0/scidb.log")
+
+

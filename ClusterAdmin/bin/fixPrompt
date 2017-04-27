@@ -1,0 +1,5 @@
+#!/bin/bash
+# source this file
+
+export PS1="[\u@\h \W]\$"
+# export PS1="\e[0;31m[\u@\h \W]\$ \e[m "

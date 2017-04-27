@@ -1,0 +1,31 @@
+#!/bin/bash
+
+echo Reload and restart with hstm and gridTransform libraries.
+touch /home/scidb/mrilee/Cluster32All/bin/last-update-libraries-attempt
+ls -l /home/scidb/mrilee/Cluster32All/bin/last-update-libraries-attempt
+
+# Safety exit
+export expectedHost="scidb32"
+if [[ $(hostname -s) != ${expectedHost} ]]; then 
+   echo Executing on wrong cluster, found: $(hostname -s), expected: ${expectedHost}. Exiting.
+   exit
+fi
+
+# Don't need the following here...
+# export clusterName="mike1_169"
+# export clusterPort="1439"
+
+# The following defines SCIDB_VER
+# source /home/scidb/.scidbrc
+source /home/scidb/mrilee/Cluster32All/bin/config-16.9
+# source /home/scidb/mrilee/Cluster32All/bin/config-16.9-mike1
+
+
+echo copying libhstmIndexLibrary.so, libgridTransform.so...
+for n in `seq 32 34`; do ssh -q scidb$n "rm -f /opt/scidb/${SCIDB_VER}/lib/scidb/plugins/libhstmIndexLibrary.so /opt/scidb/${SCIDB_VER}/lib/scidb/plugins/libgridTransform.so; cp /home/mrilee/src/DERECHOS/gridTransform/libgridTransform.so /home/mrilee/src/DERECHOS/hstmIndex-1/libhstmIndexLibrary.so /opt/scidb/${SCIDB_VER}/lib/scidb/plugins/."; done
+
+echo next step...
+echo ./start-and-load
+
+echo done
+

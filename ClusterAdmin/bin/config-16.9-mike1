@@ -1,0 +1,4 @@
+export SCIDB_VER=16.9
+export PATH=/opt/scidb/$SCIDB_VER/bin:/opt/scidb/$SCIDB_VER/share/scidb:$PATH
+export IQUERY_PORT=1439
+export IQUERY_HOST=localhost

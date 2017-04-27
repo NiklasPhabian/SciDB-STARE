@@ -1,0 +1,59 @@
+
+
+The files in this directory aid the reloading of plugins being
+developed for SciDB. These grew during the course of plugin
+development for the DERECHOS project. Each file contains hardcoded
+information such as directory locations and hostnames that would need
+to be adapted.
+
+IT IS RECOMMENDED THAT YOU USE THESE FILES FOR IDEAS AND CONSTRUCT
+YOUR OWN SCRIPTS SPECIFIC FOR YOUR NEEDS.
+
+The general usage of these scripts are as follows. They are to be
+executed by user 'scidb.' Passwordless ssh/scp to cluster nodes is
+assumed.
+
+<code>
+# optionally save existing plugins
+./backup-plugins
+
+# unload libraries and stop SciDB
+#
+# NOTE: Do not unload UDT library (i.e. hstm) while you have
+# UDT items in the SciDB database! Remove all such UDTs first,
+# then you can unload the UDT. Currently SciDB doesn't know
+# what to do with the UDTs associated with missing plugins.
+./unload-and-stop
+
+# Copy the plugin from the development library to the SciDB
+# plugin directory.
+#
+# NOTE: The name of the plugin shared-object library file must
+# 'match' the name of the library to be loaded via query.
+./update-libraries
+
+# Start SciDB and load the new plugin (shared-object library)
+./start-and-load
+</code>
+
+To start or stop SciDB without touching the libraries, you can try
+the scripts of those names.
+
+
+NOTE ON SCIDB OUTPUT: Currently the plugins generate a great deal of output on stdout
+and stderr and also via the logging system. This output and logging
+should be turned off or commented out.
+
+NOTE: Our SciDB clusters are configured to share plugin, etc., directories.
+
+
+OTHER FILES
+
+help.txt - Contains useful commands for maintaining the scidb clusters.
+
+initial-load - The usual libraries we use. Run after initall.
+
+managed-hosts - contains information about cluster configurations
+
+--
+Mike Rilee <mike@rilee.net>, 240-481-3254, DERECHOS, 2017-0427
