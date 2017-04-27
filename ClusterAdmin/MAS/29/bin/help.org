@@ -1,0 +1,14 @@
+
+
+(shell-command-to-string 
+  (concat "cd " default-directory "; "
+   "./stop;"))
+
+(shell-command-to-string 
+  (concat "cd " default-directory "; "
+  "./start;"))
+
+(shell-command-to-string 
+  (concat "cd " default-directory "; "
+  "./stop; ./start;"))
+
