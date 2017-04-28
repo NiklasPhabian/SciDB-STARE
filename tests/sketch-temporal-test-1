@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# (shell-command-to-string buffer-file-name)
+# (shell-command-to-string (concat "chmod ugo+rx "buffer-file-name))
+# (shell-command-to-string "iquery -aq \"list('functions');\" | grep -i temporal;")
+
+. test-hstm-library
+
+echo -n "1 "
+assert_equal '0000-00-01 00:00:14.664 (03)'       "stringFromTemporalIndex(120003)"
+
+echo -n "2 "
+assert_equal '000-000000-00-0-0 00:0014.664 (03)' "nativeStringFromTemporalIndex(120003)"
+
+echo -n "3 "
+# TODO verify the index below
+assert_equal_int64 9830403 "temporalIndexFromTradYrMoDyHrMiRl(0,0,1,0,20,3)"
+
+echo -n "4 "
+assert_equal "000-000000-00-0-0 00:1200.000 (03)" "nativeStringFromTemporalIndex(temporalIndexFromTradYrMoDyHrMiRl(0,0,1,0,20,3))"
+echo -n "5 "
+assert_equal "0000-00-01 00:20:00.000 (03)" "stringFromTemporalIndex(temporalIndexFromTradYrMoDyHrMiRl(0,0,1,0,20,3))"
+
+echo -n "6 "
+assert_equal_int64 120003 "temporalIndexFromNativeString(nativeStringFromTemporalIndex(120003))"
+
+echo -n "7 "
+assert_equal_int64 120003 "temporalIndexFromString(stringFromTemporalIndex(120003))"
+
+echo 

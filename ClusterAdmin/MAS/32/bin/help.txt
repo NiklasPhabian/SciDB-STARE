@@ -35,7 +35,7 @@ Notes on how to run these scripts.
 (mlr-shell-command-to-string
  "config-16.9"
  (concat "date; "
-	 "./unload-and-stop; ./update-libraries; ./start-and-load;"))
+	 "./unload-and-stop; ./update-libraries; ./start-and-load; date "))
 
 
 

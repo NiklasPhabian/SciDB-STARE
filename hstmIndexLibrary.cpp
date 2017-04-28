@@ -492,17 +492,19 @@ static void constructHstmIndexFromStringSymbol (const scidb::Value** args, scidb
 
 static void temporalIndexFromYearMonthDayHourMinuteLevel
 (const scidb::Value** args, scidb::Value* res, void* v) {
-  int     iarg    = 0;
-  int     year    = args[iarg++]->getInt64();
-  int     month   = args[iarg++]->getInt64();
-  int     day_of_month     = args[iarg++]->getInt64();
-  int     hour    = args[iarg++]->getInt64();
-  int     minute  = args[iarg++]->getInt64();
+  int64_t     iarg    = 0;
+  int64_t     year    = args[iarg++]->getInt64();
+  int64_t     month   = args[iarg++]->getInt64();
+  int64_t     day_of_month     = args[iarg++]->getInt64();
+  int64_t     hour    = args[iarg++]->getInt64();
+  int64_t     minute  = args[iarg++]->getInt64();
+  int64_t     level   = args[iarg++]->getInt64();
   
-  int     second  = 0, millisecond = 0;
+  int64_t     second  = 0, millisecond = 0;
 
   TemporalIndex tIndex;
   tIndex.hackSetTraditionalDate(year,month,day_of_month,hour,minute,second,millisecond); // TODO fix hack
+  tIndex.set_resolutionLevel(level);
 
   *(int64_t*)res->data() = tIndex.scidbTemporalIndex();
 }
@@ -704,6 +706,13 @@ public:
    _functionDescs.push_back(FunctionDescription("stringFromTemporalIndex",list_of(TID_INT64),TID_STRING,&stringTraditionalFromTemporalIndex));
    _functionDescs.push_back(FunctionDescription("temporalIndexFromNativeString",list_of(TID_STRING),TID_INT64,&temporalIndexFromNativeString));
    _functionDescs.push_back(FunctionDescription("nativeStringFromTemporalIndex",list_of(TID_INT64),TID_STRING,&stringNativeFromTemporalIndex));
+
+   /*
+     (shell-command-to-string "iquery -aq \"list('libraries');\" | grep -i hstm")
+     (shell-command-to-string "iquery -aq \"list('functions');\" | grep -i temporal")
+
+
+    */
 
     _errors[HSTM_ERROR1] = "HSTM construction error.";
     scidb::ErrorsLibrary::getInstance()->registerErrors("hstm",&_errors);

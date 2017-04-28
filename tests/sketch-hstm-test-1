@@ -1,0 +1,43 @@
+#!/bin/bash
+
+. test-hstm-library
+
+echo basic sketch
+iquery --port 1439 -aq \
+    "build(<val: string>[i=0:0,1,0], symbol(hstmFromLevelLatLon(8,45.0,45.0)))"
+
+echo test 1
+iquery --port 1439 -aq \
+    "build(<val: bool>[i=0:0,1,0], 'xxx' = symbol(hstmFromLevelLatLon(8,45.0,45.0)))"
+
+echo test 2 failing string test
+assert_equal xxx 'symbol(hstmFromLevelLatLon(8,45.0,45.0))'
+
+echo test 3.1 failing string test, with annoying extra space?
+assert_equal '(HSTMSymbolic N333133333 N333133333) ' 'symbol(hstmFromLevelLatLon(8,45.0,45.0))'
+
+echo test 3.2 passing string test, no annoying extra space?
+assert_equal '(HSTMSymbolic N333133333 N333133333)' 'symbol(hstmFromLevelLatLon(8,45.0,45.0))'
+
+echo test 4.1 integers
+assert_equal_int64 99 'hstmFromLevelLatLon(8,45.0,45.0)'
+
+echo test 4.2 symbol
+assert_equal xxx "symbol(hstm('(HSTMSymbolic N3333333333333333333333333333)'))"
+
+# echo example 4.2.1
+# iquery --port 1439 -aq "build(<val: string>[i=0:0,1,0], symbol(hstm('(HSTMSymbolic N3333333333333333333333333333)')))"
+# iquery --port 1439 -aq "build(<val: string>[i=0:0,1,0], symbol(hstm('(HSTMSymbolic N3333)')))"
+# iquery --port 1439 -aq "build(<val: string>[i=0:0,1,0], symbol(hstm('(HSTMSymbolic N3333 N3333)')))"
+# iquery --port 1439 -aq "build(<val: string>[i=0:0,1,0], hstmFromLevelLatLon(8,45.0,45.0))"
+# iquery --port 1439 -aq "build(<val: string>[i=0:0,1,0], hstm('(HSTMHex x7f7ff00000000008 x7f7fffffffffffff)'))"
+# iquery --port 1439 -aq "build(<val: string>[i=0:0,1,0], index(hstm('(HSTMHex x7f7ff00000000008 x7f7fffffffffffff)')))"
+
+
+echo $0 done
+
+
+
+
+
+
