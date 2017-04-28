@@ -3,8 +3,8 @@
 export SciDBVer=16.9
 
 echo Stop the test clusters.
-touch /home/scidb/mrilee/Cluster32All/bin/last-stop-attempt
-ls -l /home/scidb/mrilee/Cluster32All/bin/last-stop-attempt
+touch ./last-stop-attempt
+ls -l ./last-stop-attempt
 
 # Safety exit
 export expectedHost="scidb32"
@@ -16,7 +16,7 @@ fi
 source managed-hosts
 
 # source /home/scidb/.scidbrc
-source /home/scidb/mrilee/Cluster32All/bin/config-${SciDBVer}
+source ./config-${SciDBVer}
 
 # echo unloading...
 # for clusterPort in 1439 1239; do 

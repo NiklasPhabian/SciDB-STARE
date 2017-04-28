@@ -1,8 +1,8 @@
 #!/bin/bash
 
 echo Reload and restart with hstm and gridTransform libraries.
-touch /home/scidb/mrilee/Cluster32All/bin/last-update-libraries-attempt
-ls -l /home/scidb/mrilee/Cluster32All/bin/last-update-libraries-attempt
+touch ./last-update-libraries-attempt
+ls -l ./last-update-libraries-attempt
 
 # Safety exit
 export expectedHost="scidb32"
@@ -17,8 +17,8 @@ fi
 
 # The following defines SCIDB_VER
 # source /home/scidb/.scidbrc
-source /home/scidb/mrilee/Cluster32All/bin/config-16.9
-# source /home/scidb/mrilee/Cluster32All/bin/config-16.9-mike1
+source ./config-16.9
+# source ./config-16.9-mike1
 
 
 echo copying libhstmIndexLibrary.so, libgridTransform.so...

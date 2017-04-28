@@ -3,8 +3,8 @@
 export SciDBVer=16.9
 
 echo Start the clusters
-touch /home/scidb/mrilee/Cluster32All/bin/last-start-attempt
-ls -l /home/scidb/mrilee/Cluster32All/bin/last-start-attempt
+touch ./last-start-attempt
+ls -l ./last-start-attempt
 
 # Safety exit
 export expectedHost="scidb32"
@@ -16,7 +16,7 @@ fi
 source managed-hosts
 
 # source /home/scidb/.scidbrc
-source /home/scidb/mrilee/Cluster32All/bin/config-${SciDBVer}
+source ./config-${SciDBVer}
 
 echo starting...
 for clusterName in ${clusterNames}; do 

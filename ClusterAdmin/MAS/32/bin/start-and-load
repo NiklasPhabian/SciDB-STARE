@@ -1,8 +1,8 @@
 #!/bin/bash
 
 echo Start the test clusters and load the plugins.
-touch /home/scidb/mrilee/Cluster32All/bin/last-start-and-load-attempt
-ls -l /home/scidb/mrilee/Cluster32All/bin/last-start-and-load-attempt
+touch ./last-start-and-load-attempt
+ls -l ./last-start-and-load-attempt
 
 # Safety exit
 export expectedHost="scidb32"
@@ -13,8 +13,8 @@ fi
 
 source managed-hosts
 #source /home/scidb/.scidbrc
-source /home/scidb/mrilee/Cluster32All/bin/config-16.9
-# source /home/scidb/mrilee/Cluster32All/bin/config-16.9-mike1
+source ./config-16.9
+# source ./config-16.9-mike1
 
 echo starting...
 # for clusterName in mike1_169; do 

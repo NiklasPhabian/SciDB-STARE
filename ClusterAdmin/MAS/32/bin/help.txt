@@ -14,43 +14,52 @@ Notes on how to run these scripts.
 
 (switch-to-buffer-other-window "*Messages*")
 
-(shell-command-to-string "pwd")
-(shell-command-to-string "ls")
-(shell-command-to-string "scidb.py")
+(mlr-shell-command-to-string "config-16.9" "pwd")
+(mlr-shell-command-to-string "config-16.9" "ls")
+(mlr-shell-command-to-string "config-16.9" "scidb.py")
 
-(shell-command-to-string "yes | scidb.py initall mike")
+(mlr-shell-command-to-string "config-16.9" "yes | scidb.py initall mike")
 
-(shell-command-to-string "/home/scidb/mrilee/Cluster32All/bin/check-hstm 1239")
-(shell-command-to-string "/home/scidb/mrilee/Cluster32All/bin/check-hstm 1439")
-(shell-command-to-string "/home/scidb/mrilee/Cluster32All/bin/check-hstm 1539")
+(mlr-shell-command-to-string "config-16.9" "./check-hstm 1239")
+(mlr-shell-command-to-string "config-16.9" "./check-hstm 1439")
+(mlr-shell-command-to-string "config-16.9" "./check-hstm 1539")
 
-(shell-command-to-string "/home/scidb/mrilee/Cluster32All/bin/backup-plugins")
-(shell-command-to-string "/home/scidb/mrilee/Cluster32All/bin/unload-and-stop")
-(shell-command-to-string "/home/scidb/mrilee/Cluster32All/bin/update-libraries")
-(shell-command-to-string "/home/scidb/mrilee/Cluster32All/bin/start-and-load")
+(mlr-shell-command-to-string "config-16.9" "./backup-plugins")
+(mlr-shell-command-to-string "config-16.9" "./unload-and-stop")
+(mlr-shell-command-to-string "config-16.9" "./update-libraries")
+(mlr-shell-command-to-string "config-16.9" "./start-and-load")
 
-(shell-command-to-string "/home/scidb/mrilee/Cluster32All/bin/initial-load")
+(mlr-shell-command-to-string "config-16.9" "/home/scidb/mrilee/Cluster32All/bin/initial-load")
 
 ;;; Most used
-(shell-command-to-string 
-"date; cd /home/scidb/mrilee/Cluster32All/bin; ./unload-and-stop; ./update-libraries; ./start-and-load;")
-
-(shell-command-to-string 
- "cd /home/scidb/mrilee/Cluster32All/bin; ./stop; ./start;")
-
-(shell-command-to-string "/home/scidb/mrilee/Cluster32All/bin/stop")
-(shell-command-to-string "/home/scidb/mrilee/Cluster32All/bin/start")
+(mlr-shell-command-to-string
+ "config-16.9"
+ (concat "date; "
+	 "./unload-and-stop; ./update-libraries; ./start-and-load;"))
 
 
-(shell-command-to-string "iquery -p 1239 -aq \"list('arrays');\"")
-(shell-command-to-string "iquery -p 1439 -aq \"list('arrays');\"")
-
-(shell-command-to-string "iquery -p 1239 -aq \"list('libraries');\"")
-(shell-command-to-string "iquery -p 1439 -aq \"list('libraries');\"")
-(shell-command-to-string "iquery -p 1539 -aq \"list('libraries');\"")
 
 
-(shell-command-to-string "cd /home/scidb/mrilee/Cluster32All/bin; ./stop; ./start;")
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(mlr-shell-command-to-string "config-16.9" 
+			     "./stop; ./start;")
+
+(mlr-shell-command-to-string "config-16.9" "./stop;")
+(mlr-shell-command-to-string "config-16.9" "./start;")
+
+
+(mlr-shell-command-to-string "config-16.9" "iquery -p 1239 -aq \"list('arrays');\"")
+(mlr-shell-command-to-string "config-16.9" "iquery -p 1439 -aq \"list('arrays');\"")
+
+(mlr-shell-command-to-string "config-16.9" "iquery -p 1239 -aq \"list('libraries');\"")
+(mlr-shell-command-to-string "config-16.9" "iquery -p 1439 -aq \"list('libraries');\"")
+(mlr-shell-command-to-string "config-16.9" "iquery -p 1539 -aq \"list('libraries');\"")
+
+(mlr-shell-command-to-string "config-16.9" "iquery -p 1539 -aq \" list( 'functions' ); \" ")
+(shell-command-to-string "source config-16.9; iquery -p 1539 -aq \" list( 'functions' ); \" ")
+
+(mlr-shell-command-to-string "config-16.9" "cd /home/scidb/mrilee/Cluster32All/bin; ./stop; ./start;")
 
 (find-file-other-window "/att/scidb/data01/db_mike1_169/0/0/scidb.log")
 

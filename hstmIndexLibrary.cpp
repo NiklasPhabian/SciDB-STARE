@@ -14,6 +14,7 @@
 #include "SpatialIndex.h"
 #include "SpatialVector.h"
 #include "SpatialInterface.h"
+#include "TemporalIndex.h"
 
 #include "HtmRangeIterator.h"
 #include "BitShiftNameEncoding.h"
@@ -486,6 +487,91 @@ static void constructHstmIndexFromStringSymbol (const scidb::Value** args, scidb
   // TODO Need deletes for the news? Not for hIndex. It's travelling along. Consider auto pointers...
 }
 
+
+// TemporalIndex routines
+
+static void temporalIndexFromYearMonthDayHourMinuteLevel
+(const scidb::Value** args, scidb::Value* res, void* v) {
+  int     iarg    = 0;
+  int     year    = args[iarg++]->getInt64();
+  int     month   = args[iarg++]->getInt64();
+  int     day_of_month     = args[iarg++]->getInt64();
+  int     hour    = args[iarg++]->getInt64();
+  int     minute  = args[iarg++]->getInt64();
+  
+  int     second  = 0, millisecond = 0;
+
+  TemporalIndex tIndex;
+  tIndex.hackSetTraditionalDate(year,month,day_of_month,hour,minute,second,millisecond); // TODO fix hack
+
+  *(int64_t*)res->data() = tIndex.scidbTemporalIndex();
+}
+
+static void temporalIndexFromNativeMaKaYrMoWkDyHrSeMsRl
+(const scidb::Value** args, scidb::Value* res, void* v) {
+  int     iarg    = 0;
+  TemporalIndex tIndex;
+#define ARG_TO_INT(var) tIndex.data.setValue(#var,args[iarg++]->getInt64());
+  ARG_TO_INT(Ma);
+  ARG_TO_INT(ka);
+  ARG_TO_INT(year);
+  ARG_TO_INT(month);
+  ARG_TO_INT(week);
+  ARG_TO_INT(day);
+  ARG_TO_INT(hour);
+  ARG_TO_INT(second);
+  ARG_TO_INT(millisecond);
+  ARG_TO_INT(resolutionLevel);
+#undef ARG_TO_INT
+
+  *(int64_t*)res->data() = tIndex.scidbTemporalIndex();
+}
+
+static void stringNativeFromTemporalIndex
+(const scidb::Value** args, scidb::Value* res, void* v) {
+  int     iarg    = 0;
+  int64_t idx_scidb_format    = args[iarg++]->getInt64();
+
+  TemporalIndex tIndex(idx_scidb_format);
+
+  // Native format
+  res->setString(tIndex.stringInNativeDate().c_str());
+  // res->setString("notImplemented");
+}
+
+static void temporalIndexFromNativeString
+(const scidb::Value** args, scidb::Value* res, void* v) {
+  int iarg = 0;
+  std:string str = args[iarg++]->getString();
+
+  TemporalIndex tIndex;
+  tIndex.fromNativeString(str);
+
+  *(int64_t*)res->data() = tIndex.scidbTemporalIndex();
+}
+
+static void stringTraditionalFromTemporalIndex
+(const scidb::Value** args, scidb::Value* res, void* v) {
+  int     iarg    = 0;
+  int64_t idx_scidb_format    = args[iarg++]->getInt64();
+
+  TemporalIndex tIndex(idx_scidb_format);
+
+  // Traditional format
+  res->setString(tIndex.hackStringInTraditionalDate().c_str());
+}
+
+static void temporalIndexFromTraditionalString
+(const scidb::Value** args, scidb::Value* res, void* v) {
+  int iarg = 0;
+  std:string str = args[iarg++]->getString();
+  
+  TemporalIndex tIndex;
+  tIndex.hackFromTraditionalString(str);
+
+  *(int64_t*)res->data() = tIndex.scidbTemporalIndex();
+}
+
 // //  void xxx (const scidb::Value** args, scidb::Value* res, void* v) {}
 // 
 // TODO Keep track of 64-bit version vs. 63-bit version.
@@ -521,7 +607,6 @@ public:
 
     Type hstmType("hstm",sizeof(HstmIndex)*8); // size in bits
     _types.push_back(hstmType);
-
 
 // Functions registered with SciDB.
 // void funX(const scidb::Value** args, scidb::Value* res, void*) {}
@@ -604,6 +689,21 @@ public:
 //   _functionDescs.push_back(FunctionDescription("<>",list_of("hstm")("hstm"),TID_BOOL,&hstmEqualToLevel));
 
 // Need a separate hstmRange?  Can we just have one hstm?
+
+   // !!!REGISTER TEMPORAL INDECES HERE!!!
+
+   _functionDescs.push_back(FunctionDescription("temporalIndexFromTradYrMoDyHrMiRl",
+						list_of(TID_INT64)(TID_INT64)(TID_INT64)(TID_INT64)(TID_INT64)(TID_INT64),
+						TID_INT64,
+						&temporalIndexFromYearMonthDayHourMinuteLevel));
+   _functionDescs.push_back(FunctionDescription("temporalIndexFromNativeMaKaYrMoWkDyHrSeMsRl",
+						list_of(TID_INT64)(TID_INT64)(TID_INT64)(TID_INT64)(TID_INT64)(TID_INT64)(TID_INT64)(TID_INT64)(TID_INT64)(TID_INT64),
+						TID_INT64,
+						&temporalIndexFromNativeMaKaYrMoWkDyHrSeMsRl));
+   _functionDescs.push_back(FunctionDescription("temporalIndexFromString",list_of(TID_STRING),TID_INT64,&temporalIndexFromTraditionalString));
+   _functionDescs.push_back(FunctionDescription("stringFromTemporalIndex",list_of(TID_INT64),TID_STRING,&stringTraditionalFromTemporalIndex));
+   _functionDescs.push_back(FunctionDescription("temporalIndexFromNativeString",list_of(TID_STRING),TID_INT64,&temporalIndexFromNativeString));
+   _functionDescs.push_back(FunctionDescription("nativeStringFromTemporalIndex",list_of(TID_INT64),TID_STRING,&stringNativeFromTemporalIndex));
 
     _errors[HSTM_ERROR1] = "HSTM construction error.";
     scidb::ErrorsLibrary::getInstance()->registerErrors("hstm",&_errors);

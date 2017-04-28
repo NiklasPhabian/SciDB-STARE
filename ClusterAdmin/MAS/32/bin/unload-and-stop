@@ -1,8 +1,8 @@
 #!/bin/bash
 
 echo Unload the plugins and stop.
-touch /home/scidb/mrilee/Cluster32All/bin/last-unload-and-stop-attempt
-ls -l /home/scidb/mrilee/Cluster32All/bin/last-unload-and-stop-attempt
+touch ./last-unload-and-stop-attempt
+ls -l ./last-unload-and-stop-attempt
 
 # Safety exit
 export expectedHost="scidb32"
@@ -15,8 +15,8 @@ source managed-hosts
 # export clusterPorts="1439"
 
 # source /home/scidb/.scidbrc
-source /home/scidb/mrilee/Cluster32All/bin/config-16.9
-# source /home/scidb/mrilee/Cluster32All/bin/config-16.9-mike1
+source ./config-16.9
+# source ./config-16.9-mike1
 
 echo unloading...
 for clusterPort in ${clusterPorts}; do 
