@@ -17,6 +17,7 @@ echo -n "3 "
 assert_equal_int64 9830403 "temporalIndexFromTradYrMoDyHrMiRl(0,0,1,0,20,3)"
 
 echo -n "4 "
+# Note that the day field in the string starts at zero. <sigh/>
 assert_equal "000-000000-00-0-0 00:1200.000 (03)" "nativeStringFromTemporalIndex(temporalIndexFromTradYrMoDyHrMiRl(0,0,1,0,20,3))"
 echo -n "5 "
 assert_equal "0000-00-01 00:20:00.000 (03)" "stringFromTemporalIndex(temporalIndexFromTradYrMoDyHrMiRl(0,0,1,0,20,3))"
