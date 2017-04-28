@@ -490,17 +490,17 @@ static void constructHstmIndexFromStringSymbol (const scidb::Value** args, scidb
 
 // TemporalIndex routines
 
-static void temporalIndexFromYearMonthDayHourMinuteLevel
+static void temporalIndexFromYearMonthDayHourMinuteSecondMillisecondLevel
 (const scidb::Value** args, scidb::Value* res, void* v) {
   int64_t     iarg    = 0;
   int64_t     year    = args[iarg++]->getInt64();
   int64_t     month   = args[iarg++]->getInt64();
-  int64_t     day_of_month     = args[iarg++]->getInt64();
+  int64_t day_of_month= args[iarg++]->getInt64();
   int64_t     hour    = args[iarg++]->getInt64();
   int64_t     minute  = args[iarg++]->getInt64();
+  int64_t     second  = args[iarg++]->getInt64();
+  int64_t millisecond = args[iarg++]->getInt64();
   int64_t     level   = args[iarg++]->getInt64();
-  
-  int64_t     second  = 0, millisecond = 0;
 
   TemporalIndex tIndex;
   tIndex.hackSetTraditionalDate(year,month,day_of_month,hour,minute,second,millisecond); // TODO fix hack
@@ -694,10 +694,10 @@ public:
 
    // !!!REGISTER TEMPORAL INDECES HERE!!!
 
-   _functionDescs.push_back(FunctionDescription("temporalIndexFromTradYrMoDyHrMiRl",
-						list_of(TID_INT64)(TID_INT64)(TID_INT64)(TID_INT64)(TID_INT64)(TID_INT64),
+   _functionDescs.push_back(FunctionDescription("temporalIndexFromTradYrMoDyHrMiSeMsRl",
+						list_of(TID_INT64)(TID_INT64)(TID_INT64)(TID_INT64)(TID_INT64)(TID_INT64)(TID_INT64)(TID_INT64),
 						TID_INT64,
-						&temporalIndexFromYearMonthDayHourMinuteLevel));
+						&temporalIndexFromYearMonthDayHourMinuteSecondMillisecondLevel));
    _functionDescs.push_back(FunctionDescription("temporalIndexFromNativeMaKaYrMoWkDyHrSeMsRl",
 						list_of(TID_INT64)(TID_INT64)(TID_INT64)(TID_INT64)(TID_INT64)(TID_INT64)(TID_INT64)(TID_INT64)(TID_INT64)(TID_INT64),
 						TID_INT64,
