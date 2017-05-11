@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo $0 needs updating... Exiting...
+
 echo Load the basic plugins.
 touch /home/scidb/mrilee/Cluster32All/bin/last-initial-load-attempt
 ls -l /home/scidb/mrilee/Cluster32All/bin/last-initial-load-attempt
