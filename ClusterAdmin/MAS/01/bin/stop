@@ -1,0 +1,26 @@
+#!/bin/bash
+
+export SciDBVer=15.7
+
+echo Stop the test clusters.
+touch ./last-stop-attempt
+ls -l ./last-stop-attempt
+
+# Safety exit
+export expectedHost="scidb01"
+if [[ $(hostname -s) != ${expectedHost} ]]; then 
+   echo Executing on wrong cluster, found: $(hostname -s), expected: ${expectedHost}. Exiting.
+   exit
+fi
+
+source managed-hosts
+source ./config-${SciDBVer}
+
+echo stopping...
+for clusterName in ${clusterNames}; do 
+    echo processing ${clusterName}
+    scidb.py stopall ${clusterName}
+done
+
+echo done
+

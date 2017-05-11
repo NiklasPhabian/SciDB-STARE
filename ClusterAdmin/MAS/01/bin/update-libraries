@@ -1,0 +1,24 @@
+#!/bin/bash
+
+echo Reload and restart with hstm and gridTransform libraries.
+touch ./last-update-libraries-attempt
+ls -l ./last-update-libraries-attempt
+
+# Safety exit
+export expectedHost="scidb01"
+if [[ $(hostname -s) != ${expectedHost} ]]; then 
+   echo Executing on wrong cluster, found: $(hostname -s), expected: ${expectedHost}. Exiting.
+   exit
+fi
+
+# The following defines SCIDB_VER
+source ./config-15.7
+
+echo copying libhstmIndexLibrary.so...
+for n in `seq 1 28`; do ssh -q scidb$n "rm -f /opt/scidb/${SCIDB_VER}/lib/scidb/plugins/libhstmIndexLibrary.so; cp /home/mrilee/src/DERECHOS/hstmIndex-1/libhstmIndexLibrary.so /opt/scidb/${SCIDB_VER}/lib/scidb/plugins/."; done
+
+echo next step...
+echo ./start-and-load
+
+echo done
+

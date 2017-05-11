@@ -1,0 +1,25 @@
+#!/bin/bash
+
+echo $0 needs updating... Exiting...
+
+exit
+
+echo Load the basic plugins.
+touch /home/scidb/mrilee/Cluster32All/bin/last-initial-load-attempt
+ls -l /home/scidb/mrilee/Cluster32All/bin/last-initial-load-attempt
+
+# Safety exit
+export expectedHost="scidb32"
+if [[ $(hostname -s) != ${expectedHost} ]]; then 
+   echo Executing on wrong cluster, found: $(hostname -s), expected: ${expectedHost}. Exiting.
+   exit
+fi
+
+source managed-hosts
+source /home/scidb/.scidbrc
+
+for clusterPort in ${clusterPorts}; do
+  echo processing ${clusterPort}
+  iquery --port ${clusterPort} -aq "load_library('linear_algebra');"
+  iquery --port ${clusterPort} -aq "load_library('dense_linear_algebra');"
+done
