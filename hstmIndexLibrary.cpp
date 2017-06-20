@@ -246,7 +246,7 @@ static void hstmLevel (const scidb::Value** args, scidb::Value* res, void* v) {
 }
 
 static void hstmToPosition( const scidb::Value** args, scidb::Value* res, void* v) {
-  LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 000 ");
+  //  LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 000 ");
   int         iarg = 0;
   HstmIndex&  hIndex     = *(HstmIndex*)args[iarg++]->data();
   int64    iPosition     = args[iarg++]->getInt64();
@@ -256,45 +256,45 @@ static void hstmToPosition( const scidb::Value** args, scidb::Value* res, void* 
   uint64_t level = -999;
   res->setDouble(-999); // Default return... Repent later...
   
-  LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 010 ");
+  //  LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 010 ");
 
   if(range->nranges() > 0) {
-    LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 100 ");
+    //    LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 100 ");
     Key lo, hi;  // TODO need to treat ranges better.
     range->reset();
     range->getNext(lo,hi);
     if(lo != 0){
-      LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 200 ");
-      LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 200 " << hex << (lo) << dec << " " << (lo));
-      LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 200 " << hex << (hi) << dec << " " << (hi));
+      //      LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 200 ");
+      //      LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 200 " << hex << (lo) << dec << " " << (lo));
+      //      LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 200 " << hex << (hi) << dec << " " << (hi));
       
       // BUG level = levelOfId(lo); // TODO handle difference between range and id
       // Question: Just what is in hstm?
       EmbeddedLevelNameEncoding leftJustified(lo);
       level = leftJustified.getLevel();
-      LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 210 ");
+      //      LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 210 ");
       int saveLevel = 5;
       SpatialIndex index(level,saveLevel);
       
-      LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 220 ");
-      LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 220 " << level );
+      //      LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 220 ");
+      //      LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 220 " << level );
 
       // bug... since lo is in scidb format...
       // uint64 nodeIndex = index.nodeIndexFromId(lo);
 
       uint64 lo_rightJustified = leftJustified.rightJustifiedId();
 
-      LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 230 " << hex << lo_rightJustified << dec << " " << lo_rightJustified);
+      //      LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 230 " << hex << lo_rightJustified << dec << " " << lo_rightJustified);
 
       uint64 one = 1; uint64 depthBit = one << ((2*level)+3);
       uint64 nodeIndex = index.nodeIndexFromId(lo_rightJustified | depthBit); // TODO Clean this up. Oops.. Remember, we stripped the depth bit...
 
-      LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 250 " << hex << nodeIndex << dec << " " << nodeIndex );
+      //      LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 250 " << hex << nodeIndex << dec << " " << nodeIndex );
       
       SpatialVector v0,v1,v2,v3;
       index.nodeVertex(nodeIndex,v1,v2,v3);
 
-      LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 300 ");
+      //      LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 300 ");
     
       if( iPosition == 0 ) {
 	// Cell center
@@ -308,18 +308,21 @@ static void hstmToPosition( const scidb::Value** args, scidb::Value* res, void* 
       } else if ( iPosition == 3 ) {
 	// Corner 2
 	v0 = v3;
+      } else {
+	throw USER_EXCEPTION(SCIDB_SE_UDO, SCIDB_LE_OPTION_NOT_ALLOWED)
+	  << "iPosition out of bounds [0-3]";
       }
 
-      LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 400 ");
-      LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 400 v0.x: " << v0.x());
-      LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 400 v0.y: " << v0.y());
-      LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 400 v0.z: " << v0.z());
+      //      LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 400 ");
+      //      LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 400 v0.x: " << v0.x());
+      //      LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 400 v0.y: " << v0.y());
+      //      LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 400 v0.z: " << v0.z());
       
       float64 latDegrees, lonDegrees;
       v0.normalize();
       v0.getLatLonDegrees(latDegrees,lonDegrees);
 
-      LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 500 ");
+      //      LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 500 ");
       
       if( lat_or_lon == "lat" ) {
 	res->setDouble(latDegrees);
@@ -329,7 +332,7 @@ static void hstmToPosition( const scidb::Value** args, scidb::Value* res, void* 
 	throw USER_EXCEPTION(SCIDB_SE_UDO, SCIDB_LE_OPTION_NOT_ALLOWED)
 	  << lat_or_lon;
       }
-      LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 600 ");
+      //      LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 600 ");
     }
   }
 }

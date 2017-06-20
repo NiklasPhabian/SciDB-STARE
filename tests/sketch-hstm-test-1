@@ -47,5 +47,10 @@ assert_equal "(HSTMHex x7f7ff00000000008 x7f7fffffffffffff)" "string(hstmFromLev
 echo test 5.1 lat-lon and nodeIndex
 assert_equal "45.1468735700533" "string(positionFromHstm(hstmFromLevelLatLon(8,45.0,45.0),0,'lat'))"
 
+echo test 5.2 FAILING lat-lon and nodeIndex bad parameter lati
+iquery --port 1439 -aq "build(<val:string>[i1=0:0,1,0],string(positionFromHstm(hstmFromLevelLatLon(8,45.0,45.0),0,'lati')))"
+
+echo test 5.3 FAILING lat-lon and nodeIndex out of bounds vector number
+iquery --port 1439 -aq "build(<val:string>[i1=0:0,1,0],string(positionFromHstm(hstmFromLevelLatLon(8,45.0,45.0),20,'lat')))"
 
 echo $0 done
