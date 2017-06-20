@@ -1,10 +1,13 @@
 #!/bin/bash
 
+# export TEST_PORT=1439
+export TEST_PORT=1239
+
 assert_equal() {
-    export result=`iquery --port 1439 -aq \
+    export result=`iquery --port ${TEST_PORT} -aq \
 	"build(<val: bool>[i=0:0,1,0], '$1' = $2)" \
 	| tail -1 |  cut -d" " -f2- `
-    export result1=`iquery --port 1439 -aq \
+    export result1=`iquery --port ${TEST_PORT} -aq \
 	"build(<val: string>[i=0:0,1,0], $2)" \
 	| tail -1 |  cut -d" " -f2- `
 #    echo result : \"$result\"
@@ -15,10 +18,10 @@ assert_equal() {
 }
 
 assert_not_equal() {
-    export result=`iquery --port 1439 -aq \
+    export result=`iquery --port ${TEST_PORT} -aq \
 	"build(<val: bool>[i=0:0,1,0], '$1' != $2)" \
 	| tail -1 |  cut -d" " -f2- `
-    export result1=`iquery --port 1439 -aq \
+    export result1=`iquery --port ${TEST_PORT} -aq \
 	"build(<val: string>[i=0:0,1,0], $2)" \
 	| tail -1 |  cut -d" " -f2- `
     # echo result: \"$result\"
@@ -29,10 +32,10 @@ assert_not_equal() {
 
 
 assert_equal_int64() {
-    export result=`iquery --port 1439 -aq \
+    export result=`iquery --port ${TEST_PORT} -aq \
 	"build(<val: bool>[i=0:0,1,0], $1 = $2)" \
 	| tail -1 |  cut -d" " -f2- `
-    export result1=`iquery --port 1439 -aq \
+    export result1=`iquery --port ${TEST_PORT} -aq \
 	"build(<val: int64>[i=0:0,1,0], $2)" \
 	| tail -1 |  cut -d" " -f2- `
     # echo result: \"$result\"
@@ -40,4 +43,21 @@ assert_equal_int64() {
 	echo -e assert_equal::FAILURE: expected: $1 .eq.  \'$2\' found  \'${result1}\'
     fi
 }
+
+#assert_equal_double() {
+#    echo export result=iquery --port ${TEST_PORT} -aq \
+#	"build(<val: bool>[i=0:0,1,0], $1 = $2)" \
+#	| tail -1 |  cut -d" " -f2- 
+#
+#    export result=`iquery --port ${TEST_PORT} -aq \
+#	"build(<val: bool>[i=0:0,1,0], $1 = $2)" \
+#	| tail -1 |  cut -d" " -f2- `
+#    export result1=`iquery --port ${TEST_PORT} -aq \
+#	"build(<val: double>[i=0:0,1,0], $2)" \
+#	| tail -1 |  cut -d" " -f2- `
+#    # echo result: \"$result\"
+#    if [ x${result} == xfalse ]; then
+#	echo -e assert_equal::FAILURE: expected: $1 .eq.  \'$2\' found  \'${result1}\'
+#    fi
+#}
 

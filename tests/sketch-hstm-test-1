@@ -2,6 +2,8 @@
 
 . test-hstm-library
 
+if [ 1 == 1 ]; then
+
 echo basic sketch
 iquery --port 1439 -aq \
     "build(<val: string>[i=0:0,1,0], symbol(hstmFromLevelLatLon(8,45.0,45.0)))"
@@ -33,11 +35,17 @@ assert_equal xxx "symbol(hstm('(HSTMSymbolic N3333333333333333333333333333)'))"
 # iquery --port 1439 -aq "build(<val: string>[i=0:0,1,0], hstm('(HSTMHex x7f7ff00000000008 x7f7fffffffffffff)'))"
 # iquery --port 1439 -aq "build(<val: string>[i=0:0,1,0], index(hstm('(HSTMHex x7f7ff00000000008 x7f7fffffffffffff)')))"
 
+# iquery --port 1439 -aq "build(<val: string>[i=0:0,1,0], level(hstm('(HSTMHex x7f7ff00000000008 x7f7fffffffffffff)')))"
+# iquery --port 1439 -aq "build(<val: int64>[i=0:0,1,0],positionFromHstm(hstmFromLevelLatLon(8,45.0,45.0),0,'lat'));"
+
+fi
+
+echo test 5. Check lat lon
+assert_equal "(HSTMHex x7f7ff00000000008 x7f7fffffffffffff)" "string(hstmFromLevelLatLon(8,45.0,45.0))"
+#assert_equal "4593662823824883720" "string(hstmFromLevelLatLon(8,45.0,45.0))"
+
+echo test 5.1 lat-lon and nodeIndex
+assert_equal "45.1468735700533" "string(positionFromHstm(hstmFromLevelLatLon(8,45.0,45.0),0,'lat'))"
+
 
 echo $0 done
-
-
-
-
-
-

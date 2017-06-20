@@ -15,7 +15,11 @@ fi
 source ./config-15.7
 
 echo copying libhstmIndexLibrary.so...
-for n in `seq 1 28`; do ssh -q scidb$n "rm -f /opt/scidb/${SCIDB_VER}/lib/scidb/plugins/libhstmIndexLibrary.so; cp /home/mrilee/src/DERECHOS/hstmIndex-1/libhstmIndexLibrary.so /opt/scidb/${SCIDB_VER}/lib/scidb/plugins/."; done
+for n in `seq 1 28`; do ssh -q scidb`printf %02d $n` "rm -f /opt/scidb/${SCIDB_VER}/lib/scidb/plugins/libhstmIndexLibrary.so; cp /home/mrilee/src/DERECHOS/hstmIndex-1/libhstmIndexLibrary.so /opt/scidb/${SCIDB_VER}/lib/scidb/plugins/."; done
+
+# echo copying libgridTransform.so...
+# for n in `seq 1 28`; do ssh -q scidb`printf %02d $n` "rm -f /opt/scidb/${SCIDB_VER}/lib/scidb/plugins/libgridTransform.so; cp /home/mrilee/src/DERECHOS/hstmIndex-1/libgridTransform.so /opt/scidb/${SCIDB_VER}/lib/scidb/plugins/."; done
+
 
 echo next step...
 echo ./start-and-load

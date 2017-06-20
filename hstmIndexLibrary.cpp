@@ -130,8 +130,8 @@ static void indexFromHstm (const scidb::Value** args, scidb::Value* res, void* v
   int status = hIndex.range->getNext(&lo,&hi);
   EmbeddedLevelNameEncoding leftJustified = EmbeddedLevelNameEncoding(lo);
   int64 leftID = leftJustified.getSciDBLeftJustifiedFormat();
-  // LOG4CXX_DEBUG(logger, L"hstm::indexFromHstm lo     " << hex << (lo) << dec);
-  // LOG4CXX_DEBUG(logger, L"hstm::indexFromHstm leftID " << hex << (leftID) << dec);
+  // //MLR// LOG4CXX_DEBUG(logger, L"hstm::indexFromHstm lo     " << hex << (lo) << dec);
+  // //MLR// LOG4CXX_DEBUG(logger, L"hstm::indexFromHstm leftID " << hex << (leftID) << dec);
   res->setInt64(leftID);
 }
 static void hstmFromIndex (const scidb::Value** args, scidb::Value* res, void* v) {
@@ -161,36 +161,36 @@ static void hstmLeftJustifiedNoLevel (const scidb::Value** args, scidb::Value* r
   uint64_t leftID = 0;
   // stringstream ss;
   // ss << showbase << hex << (*range) << dec;
-  // LOG4CXX_DEBUG(logger, L"hstm::leftJustifiedNoLevel " << (ss.str().c_str()));
+  // //MLR// LOG4CXX_DEBUG(logger, L"hstm::leftJustifiedNoLevel " << (ss.str().c_str()));
   if(range->nranges() > 0) {
     //    range->print(HtmRange::LOWS,ss,true); // How many pairs will this print?
-    //    LOG4CXX_DEBUG(logger, L"hstm::leftJustifiedNoLevel name: " << (ss.str().c_str()));
+    //    //MLR// LOG4CXX_DEBUG(logger, L"hstm::leftJustifiedNoLevel name: " << (ss.str().c_str()));
     // TODO The following is wrong but it gets the ball rolling.
     Key lo,hi; // in SciDB
     range->reset();
     range->getNext(lo,hi);
-    LOG4CXX_DEBUG(logger, L"hstm::leftJustifiedNoLevel lo,hi: " << lo << " " << hi);
+    //MLR// LOG4CXX_DEBUG(logger, L"hstm::leftJustifiedNoLevel lo,hi: " << lo << " " << hi);
     if(lo != 0){
       // EmbeddedLevelNameEncoding *name = new EmbeddedLevelNameEncoding(lo);
       // range->print(HtmRange::LOWS,ss,true); // How many pairs will this print?
-      //      LOG4CXX_DEBUG(logger, L"hstm::leftJustifiedNoLevel name00: " << (ss.str().c_str()));
+      //      //MLR// LOG4CXX_DEBUG(logger, L"hstm::leftJustifiedNoLevel name00: " << (ss.str().c_str()));
       //char* idName = new char[ss.str().length()+1]; //  = (ss.str().c_str());
       // char idName[80];
       // char idName[ss.str().length()+1];
       // strcpy(idName,ss.str().c_str());
-      // LOG4CXX_DEBUG(logger, L"hstm::leftJustifiedNoLevel name10: " << (ss.str().c_str()));
+      // //MLR// LOG4CXX_DEBUG(logger, L"hstm::leftJustifiedNoLevel name10: " << (ss.str().c_str()));
       // ss.str(""); 
       // ss << idName;
-      // LOG4CXX_DEBUG(logger, L"hstm::leftJustifiedNoLevel name11: " << (ss.str().c_str()));
+      // //MLR// LOG4CXX_DEBUG(logger, L"hstm::leftJustifiedNoLevel name11: " << (ss.str().c_str()));
       // TODO Why does idName seem to differ from getName below?
       //      BitShiftNameEncoding *rightJustified = new BitShiftNameEncoding(idName);
       // TODO Streamline the process of going between right and left justification.
       //old      BitShiftNameEncoding *rightJustified = new BitShiftNameEncoding(lo);
-      //old      LOG4CXX_DEBUG(logger, L"hstm::leftJustifiedNoLevel name15: " << rightJustified->getName());
+      //old      //MLR// LOG4CXX_DEBUG(logger, L"hstm::leftJustifiedNoLevel name15: " << rightJustified->getName());
       //old      EmbeddedLevelNameEncoding *name = new EmbeddedLevelNameEncoding(rightJustified->getName());
       EmbeddedLevelNameEncoding leftJustified;
       leftJustified.setIdFromSciDBLeftJustifiedFormat(lo);
-      //old      LOG4CXX_DEBUG(logger, L"hstm::leftJustifiedNoLevel name20: " << name->getName());
+      //old      //MLR// LOG4CXX_DEBUG(logger, L"hstm::leftJustifiedNoLevel name20: " << name->getName());
 
       //old      leftID = (uint64_t)name->getId_NoEmbeddedLevel(); // TODO Be careful about digits beyond the level.
       leftID = leftJustified.getId_NoEmbeddedLevel();
@@ -199,8 +199,8 @@ static void hstmLeftJustifiedNoLevel (const scidb::Value** args, scidb::Value* r
   }
   // ss.str("");
   // ss << hex << (uint64_t)leftID << dec;
-  // LOG4CXX_DEBUG(logger, L"hstm::leftJustifiedNoLevel leftID ss: " << (ss.str().c_str()));
-  // LOG4CXX_DEBUG(logger, L"hstm::leftJustifiedNoLevel leftID ui: " << (uint64_t)leftID);
+  // //MLR// LOG4CXX_DEBUG(logger, L"hstm::leftJustifiedNoLevel leftID ss: " << (ss.str().c_str()));
+  // //MLR// LOG4CXX_DEBUG(logger, L"hstm::leftJustifiedNoLevel leftID ui: " << (uint64_t)leftID);
   *(uint64_t*)res->data() = leftID;
 
 }
@@ -219,6 +219,7 @@ static void hstmRightJustifiedNoLevel (const scidb::Value** args, scidb::Value* 
     if(lo != 0){
       // BitShiftNameEncoding *rightJustified = new BitShiftNameEncoding(lo);
       // delete rightJustified;
+      // 2017-0619 MLR The following is probably wrong... BUG BUG BUG
       rightID = lo; // TODO handle difference between range and id
     }
     *(uint64_t*)res->data() = rightID;
@@ -236,12 +237,104 @@ static void hstmLevel (const scidb::Value** args, scidb::Value* res, void* v) {
     range->reset();
     range->getNext(lo,hi);
     if(lo != 0){
-      level = levelOfId(lo); // TODO handle difference between range and id
+      // correct
+      EmbeddedLevelNameEncoding leftJustified(lo);
+      level = leftJustified.getLevel();      
     }
     *(uint64_t*)res->data() = level;
   }
 }
 
+static void hstmToPosition( const scidb::Value** args, scidb::Value* res, void* v) {
+  LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 000 ");
+  int         iarg = 0;
+  HstmIndex&  hIndex     = *(HstmIndex*)args[iarg++]->data();
+  int64    iPosition     = args[iarg++]->getInt64();
+  std::string lat_or_lon = args[iarg++]->getString();
+
+  HtmRangeMultiLevel    *range = hIndex.range;
+  uint64_t level = -999;
+  res->setDouble(-999); // Default return... Repent later...
+  
+  LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 010 ");
+
+  if(range->nranges() > 0) {
+    LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 100 ");
+    Key lo, hi;  // TODO need to treat ranges better.
+    range->reset();
+    range->getNext(lo,hi);
+    if(lo != 0){
+      LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 200 ");
+      LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 200 " << hex << (lo) << dec << " " << (lo));
+      LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 200 " << hex << (hi) << dec << " " << (hi));
+      
+      // BUG level = levelOfId(lo); // TODO handle difference between range and id
+      // Question: Just what is in hstm?
+      EmbeddedLevelNameEncoding leftJustified(lo);
+      level = leftJustified.getLevel();
+      LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 210 ");
+      int saveLevel = 5;
+      SpatialIndex index(level,saveLevel);
+      
+      LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 220 ");
+      LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 220 " << level );
+
+      // bug... since lo is in scidb format...
+      // uint64 nodeIndex = index.nodeIndexFromId(lo);
+
+      uint64 lo_rightJustified = leftJustified.rightJustifiedId();
+
+      LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 230 " << hex << lo_rightJustified << dec << " " << lo_rightJustified);
+
+      uint64 one = 1; uint64 depthBit = one << ((2*level)+3);
+      uint64 nodeIndex = index.nodeIndexFromId(lo_rightJustified | depthBit); // TODO Clean this up. Oops.. Remember, we stripped the depth bit...
+
+      LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 250 " << hex << nodeIndex << dec << " " << nodeIndex );
+      
+      SpatialVector v0,v1,v2,v3;
+      index.nodeVertex(nodeIndex,v1,v2,v3);
+
+      LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 300 ");
+    
+      if( iPosition == 0 ) {
+	// Cell center
+	v0 = (v1 + v2 + v3)*(1.0/3.0); 
+      } else if ( iPosition == 1 ) {
+	// Corner 0
+	v0 = v1;
+      } else if ( iPosition == 2 ) {
+	// Corner 1
+	v0 = v2;
+      } else if ( iPosition == 3 ) {
+	// Corner 2
+	v0 = v3;
+      }
+
+      LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 400 ");
+      LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 400 v0.x: " << v0.x());
+      LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 400 v0.y: " << v0.y());
+      LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 400 v0.z: " << v0.z());
+      
+      float64 latDegrees, lonDegrees;
+      v0.normalize();
+      v0.getLatLonDegrees(latDegrees,lonDegrees);
+
+      LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 500 ");
+      
+      if( lat_or_lon == "lat" ) {
+	res->setDouble(latDegrees);
+      } else if( lat_or_lon == "lon" ) {
+	res->setDouble(lonDegrees);
+      } else {
+	throw USER_EXCEPTION(SCIDB_SE_UDO, SCIDB_LE_OPTION_NOT_ALLOWED)
+	  << lat_or_lon;
+      }
+      LOG4CXX_DEBUG(logger,L"hstm::hstmToPosition 600 ");
+    }
+  }
+}
+
+	
 static void hstmIdToLevel (const scidb::Value** args, scidb::Value* res, void* v) {
   int        iarg     = 0;
   HstmIndex& hIndex   = *(HstmIndex*)args[iarg++]->data();
@@ -254,11 +347,11 @@ static void hstmIdToLevel (const scidb::Value** args, scidb::Value* res, void* v
   // so it is in right justified bits.
 
   Key lo = 0, hi = 0;  // TODO need to treat ranges better.
-  LOG4CXX_DEBUG(logger, L"hstm::idToLevel nr " << range->nranges());
+  //MLR// LOG4CXX_DEBUG(logger, L"hstm::idToLevel nr " << range->nranges());
   if(range->nranges() > 0) {
     range->reset();
     range->getNext(lo,hi);
-    LOG4CXX_DEBUG(logger, L"hstm::idToLevel lo,hi 1 " << lo << " " << hi);
+    //MLR// LOG4CXX_DEBUG(logger, L"hstm::idToLevel lo,hi 1 " << lo << " " << hi);
 
     EmbeddedLevelNameEncoding lo_left(lo);
     EmbeddedLevelNameEncoding lo_left_new = lo_left.atLevel(newLevel);
@@ -283,7 +376,7 @@ static void hstmIdToLevel (const scidb::Value** args, scidb::Value* res, void* v
     newIndex = new HstmIndex;
     // *(HstmIndex*)res->data() = HstmIndex();
   }
-  LOG4CXX_DEBUG(logger, L"hstm::idToLevel " << lo << " " << hi << " " << " " << level << " " << newLevel);
+  //MLR// LOG4CXX_DEBUG(logger, L"hstm::idToLevel " << lo << " " << hi << " " << " " << level << " " << newLevel);
   *(HstmIndex*)res->data() = *newIndex;
 }
 
@@ -307,7 +400,7 @@ static void hstmEQ (const scidb::Value** args, scidb::Value* res, void* v) {
 // // //   int     iarg       = 0;
 // // //   int64_t id         = args[iarg++]->getInt64(); // uint64?
 // // //   HstmIndex *hIndex = new HstmIndex;
-// // //   LOG4CXX_DEBUG(logger, L"hstm::int64ToHstm " << 999);
+// // //   //MLR// LOG4CXX_DEBUG(logger, L"hstm::int64ToHstm " << 999);
 // // //   if( id != 0 ) {
 // // //     hIndex->range->addRange(id,id);
 // // //   }
@@ -318,26 +411,26 @@ void hstm::stringToHstm (const scidb::Value** args, scidb::Value* res, void* v) 
   // TODO Add some smarts to stringToHstm. Strings could be symbolic or hex...
   int     iarg       = 0;
   std::string symbol = args[iarg++]->getString();
-  LOG4CXX_DEBUG(logger, L"hstm::stringToHstm " << "000 " << symbol.c_str());
+  //MLR// LOG4CXX_DEBUG(logger, L"hstm::stringToHstm " << "000 " << symbol.c_str());
   HstmIndex *hIndex = new HstmIndex;
-  LOG4CXX_DEBUG(logger, L"hstm::stringToHstm " << 100);
+  //MLR// LOG4CXX_DEBUG(logger, L"hstm::stringToHstm " << 100);
   hIndex->range->parse(symbol);
-  LOG4CXX_DEBUG(logger, L"hstm::stringToHstm " << 200);
+  //MLR// LOG4CXX_DEBUG(logger, L"hstm::stringToHstm " << 200);
   *(HstmIndex*)res->data() = *hIndex;
-  LOG4CXX_DEBUG(logger, L"hstm::stringToHstm " << 999);
+  //MLR// LOG4CXX_DEBUG(logger, L"hstm::stringToHstm " << 999);
 }
 // 
 static void hstmToString (const scidb::Value** args, scidb::Value* res, void* v) {
   HstmIndex& hIndex = *(HstmIndex*)args[0]->data();
   HtmRangeMultiLevel   *range = hIndex.range;
   stringstream ss;
-  LOG4CXX_DEBUG(logger, L"hstm::hstmToString " << 999);
+  //MLR// LOG4CXX_DEBUG(logger, L"hstm::hstmToString " << 999);
   int64_t nranges = -1;
-  LOG4CXX_DEBUG(logger, L"hstm::hstmToString " << 998);
+  //MLR// LOG4CXX_DEBUG(logger, L"hstm::hstmToString " << 998);
   // ss << range;
-  // LOG4CXX_DEBUG(logger, L"hstm::hstmToString    ss: " << (ss.str().c_str()));
+  // //MLR// LOG4CXX_DEBUG(logger, L"hstm::hstmToString    ss: " << (ss.str().c_str()));
   nranges = range->nranges();
-  // LOG4CXX_DEBUG(logger, L"hstm::hstmToString    ss: " << nranges);
+  // //MLR// LOG4CXX_DEBUG(logger, L"hstm::hstmToString    ss: " << nranges);
   if(!nranges) {
     // res->setString("invalid"); // Poke in the invalid htmId.
     res->setString("x0 x0"); // Poke in the invalid htmId.
@@ -345,11 +438,11 @@ static void hstmToString (const scidb::Value** args, scidb::Value* res, void* v)
   } else {
     // ss << showbase << hex << (*range) << dec;
     ss << hex << (*range) << dec;
-    LOG4CXX_DEBUG(logger, L"hstm::hstmToString default*r " << (ss.str().c_str()));
+    //MLR// LOG4CXX_DEBUG(logger, L"hstm::hstmToString default*r " << (ss.str().c_str()));
     // res->setString("poke");
     res->setString(ss.str().c_str());
   }
-  LOG4CXX_DEBUG(logger, L"hstm::hstmToString " << 997);
+  //MLR// LOG4CXX_DEBUG(logger, L"hstm::hstmToString " << 997);
 }
 
 // // TODO Somehow we're going to have to add a way to get int64 hstm, as opposed to scidb indexes
@@ -357,9 +450,9 @@ static void hstmToInt64 (const scidb::Value** args, scidb::Value* res, void* v) 
   HstmIndex& hIndex = *(HstmIndex*)args[0]->data();
   HtmRangeMultiLevel   *range = hIndex.range;
   int64_t id_left;
-  LOG4CXX_DEBUG(logger, L"hstm::hstmToInt64 " << 999);
+  //MLR// LOG4CXX_DEBUG(logger, L"hstm::hstmToInt64 " << 999);
   int64_t nranges = -1;
-  LOG4CXX_DEBUG(logger, L"hstm::hstmToInt64 " << 998);
+  //MLR// LOG4CXX_DEBUG(logger, L"hstm::hstmToInt64 " << 998);
   nranges = range->nranges();
   if(!nranges) {
     res->setInt64(0); // Poke in the invalid htmId.
@@ -376,18 +469,18 @@ static void hstmToInt64 (const scidb::Value** args, scidb::Value* res, void* v) 
 
     range->reset();
     int status = range->getNext(&lo,&hi); // HtmRangeMultiLevel is already LJNL = LeftJustNoLevel
-    LOG4CXX_DEBUG(logger, L"hstm::hstmToInt64 lo " << (lo));
+    //MLR// LOG4CXX_DEBUG(logger, L"hstm::hstmToInt64 lo " << (lo));
 
     EmbeddedLevelNameEncoding name = EmbeddedLevelNameEncoding(lo);
 
     // Just get the first index of the first element of the range.
     id_left = name.getSciDBLeftJustifiedFormat(); // Put it into SciDB format for printing/indexing/etc.
 
-    LOG4CXX_DEBUG(logger, L"hstm::hstmToInt64 ss " << (id_left));
+    //MLR// LOG4CXX_DEBUG(logger, L"hstm::hstmToInt64 ss " << (id_left));
     // Question:  What is the format of the intger here?
     res->setInt64(id_left);
   }
-  LOG4CXX_DEBUG(logger, L"hstm::hstmToInt64 " << 997);
+  //MLR// LOG4CXX_DEBUG(logger, L"hstm::hstmToInt64 " << 997);
 }
 
 static void equal_Int64Hstm (const scidb::Value** args, scidb::Value* res, void* v) {
@@ -407,7 +500,7 @@ static void equal_Int64Hstm (const scidb::Value** args, scidb::Value* res, void*
 }
 
 static void constructDefaultHstmIndex (const scidb::Value** args, scidb::Value* res, void* v) {
-  LOG4CXX_DEBUG(logger, L"hstm::constructDefaultHstmIndex " << 999);
+  //MLR// LOG4CXX_DEBUG(logger, L"hstm::constructDefaultHstmIndex " << 999);
   // *(HstmIndex*)res->data() = HstmIndex();
   // Is there a destructor somewhere that needs to be defined?
   stringstream ss;
@@ -415,21 +508,21 @@ static void constructDefaultHstmIndex (const scidb::Value** args, scidb::Value* 
   //  HstmIndex& resultId = *(HstmIndex*)res->data();
 
   HstmIndex *hIndex = new HstmIndex;
-  LOG4CXX_DEBUG(logger, L"hstm::constructDefaultHstmIndex    hIndex-nr: " << hIndex->range->nranges());
-  LOG4CXX_DEBUG(logger, L"hstm::constructDefaultHstmIndex " << 998);
+  //MLR// LOG4CXX_DEBUG(logger, L"hstm::constructDefaultHstmIndex    hIndex-nr: " << hIndex->range->nranges());
+  //MLR// LOG4CXX_DEBUG(logger, L"hstm::constructDefaultHstmIndex " << 998);
 
   //  *(HstmIndex*)res->data() = HstmIndex();
   *(HstmIndex*)res->data() = *hIndex;
   ss << hex << ((HstmIndex*)res->data())->range << dec;
-  LOG4CXX_DEBUG(logger, L"hstm::constructDefaultHstmIndex    ss: " << (ss.str().c_str()));
+  //MLR// LOG4CXX_DEBUG(logger, L"hstm::constructDefaultHstmIndex    ss: " << (ss.str().c_str()));
   int64_t nranges = ((HstmIndex*)res->data())->range->nranges();
-  LOG4CXX_DEBUG(logger, L"hstm::constructDefaultHstmIndex    nr: " << (nranges));
+  //MLR// LOG4CXX_DEBUG(logger, L"hstm::constructDefaultHstmIndex    nr: " << (nranges));
 }
 static void constructHstmIndexFromInt64 (const scidb::Value** args, scidb::Value* res, void* v) {
   int     iarg       = 0;
   int64_t id         = args[iarg++]->getInt64(); // uint64?
-  LOG4CXX_DEBUG(logger, L"hstm::constructHstmIndexFromInt64 " << 999);
-  LOG4CXX_DEBUG(logger, L"hstm::constructHstmIndexFromInt64 " << id);
+  //MLR// LOG4CXX_DEBUG(logger, L"hstm::constructHstmIndexFromInt64 " << 999);
+  //MLR// LOG4CXX_DEBUG(logger, L"hstm::constructHstmIndexFromInt64 " << id);
 
   // See also hstmFromIndex.
 
@@ -443,13 +536,13 @@ static void constructHstmIndexFromInt64 (const scidb::Value** args, scidb::Value
 
   }
   *(HstmIndex*)res->data() = *hIndex;
-  LOG4CXX_DEBUG(logger, L"hstm::constructHstmIndexFromInt64 " << 100);
+  //MLR// LOG4CXX_DEBUG(logger, L"hstm::constructHstmIndexFromInt64 " << 100);
 }
 static void constructHstmIndexFromInt642 (const scidb::Value** args, scidb::Value* res, void* v) {
   int     iarg       = 0;
   int64_t lo         = args[iarg++]->getInt64(); // uint64?
   int64_t hi         = args[iarg++]->getInt64(); // uint64?
-  LOG4CXX_DEBUG(logger, L"hstm::constructHstmIndexFromInt642 " << 999);
+  //MLR// LOG4CXX_DEBUG(logger, L"hstm::constructHstmIndexFromInt642 " << 999);
 
   HstmIndex *hIndex = new HstmIndex;
 
@@ -464,7 +557,7 @@ static void constructHstmIndexFromInt642 (const scidb::Value** args, scidb::Valu
     }
   }
   *(HstmIndex*)res->data() = *hIndex;
-  LOG4CXX_DEBUG(logger, L"hstm::constructHstmIndexFromInt642 " << 100);
+  //MLR// LOG4CXX_DEBUG(logger, L"hstm::constructHstmIndexFromInt642 " << 100);
 }
 static void constructHstmIndexFromStringSymbol (const scidb::Value** args, scidb::Value* res, void* v) {
   int     iarg       = 0;
@@ -476,13 +569,13 @@ static void constructHstmIndexFromStringSymbol (const scidb::Value** args, scidb
 
   *(HstmIndex*)res->data() = *hIndex;
 
-  LOG4CXX_DEBUG(logger, L"hstm::constructHstmIndexFromStringSymbol " << 100);
-  LOG4CXX_DEBUG(logger, L"hstm::constructHstmIndexFromStringSymbol " << symbol.c_str());
-  LOG4CXX_DEBUG(logger, L"hstm::constructHstmIndexFromStringSymbol " << 200);
+  //MLR// LOG4CXX_DEBUG(logger, L"hstm::constructHstmIndexFromStringSymbol " << 100);
+  //MLR// LOG4CXX_DEBUG(logger, L"hstm::constructHstmIndexFromStringSymbol " << symbol.c_str());
+  //MLR// LOG4CXX_DEBUG(logger, L"hstm::constructHstmIndexFromStringSymbol " << 200);
   stringstream ss;
   hIndex->range->print(HtmRange::BOTH,ss,true);
-  LOG4CXX_DEBUG(logger, L"hstm::constructHstmIndexFromStringSymbol " << ss.str().c_str());
-  LOG4CXX_DEBUG(logger, L"hstm::constructHstmIndexFromStringSymbol " << 999);
+  //MLR// LOG4CXX_DEBUG(logger, L"hstm::constructHstmIndexFromStringSymbol " << ss.str().c_str());
+  //MLR// LOG4CXX_DEBUG(logger, L"hstm::constructHstmIndexFromStringSymbol " << 999);
 
   // TODO Need deletes for the news? Not for hIndex. It's travelling along. Consider auto pointers...
 }
@@ -574,6 +667,16 @@ static void temporalIndexFromTraditionalString
   *(int64_t*)res->data() = tIndex.scidbTemporalIndex();
 }
 
+// static void temporalLevelOfFirstDifference // The wish....
+static void int64_FirstBitDifferenceFromLeft // The reality
+(const scidb::Value** args, scidb::Value* res, void* v) {
+  int     iarg = 0;
+  int64_t left_tIdx  = args[iarg++]->getInt64();
+  int64_t right_tIdx = args[iarg++]->getInt64();
+
+  *(int64_t*)res->data() = (int64_t)firstBitDifferenceFromLeft(left_tIdx,right_tIdx);
+}
+
 // //  void xxx (const scidb::Value** args, scidb::Value* res, void* v) {}
 // 
 // TODO Keep track of 64-bit version vs. 63-bit version.
@@ -622,6 +725,7 @@ public:
 // // hstmFromLevelLatLon (level,degrees,degrees toh stm index)
 // // REGISTER_FUNCTION(hstmFromLevelLatLon,list_of("int64")("double")("double"),"hstm",hstmFromLevelLatLon);
    _functionDescs.push_back(FunctionDescription("hstmFromLevelLatLon",list_of(TID_INT64)(TID_DOUBLE)(TID_DOUBLE),TypeId("hstm"),&hstmFromLevelLatLon));
+   _functionDescs.push_back(FunctionDescription("positionFromHstm",list_of("hstm")(TID_INT64)(TID_STRING),TID_DOUBLE,&hstmToPosition));
 // 
 // // hstmFromLevelXYZ
 // // REGISTER_FUNCTION(hstmFromLevelXYZ,list_of("int64")("double")("double")("double"),"hstm",hstmFromLevelXYZ);
@@ -706,6 +810,8 @@ public:
    _functionDescs.push_back(FunctionDescription("stringFromTemporalIndex",list_of(TID_INT64),TID_STRING,&stringTraditionalFromTemporalIndex));
    _functionDescs.push_back(FunctionDescription("temporalIndexFromNativeString",list_of(TID_STRING),TID_INT64,&temporalIndexFromNativeString));
    _functionDescs.push_back(FunctionDescription("nativeStringFromTemporalIndex",list_of(TID_INT64),TID_STRING,&stringNativeFromTemporalIndex));
+
+   _functionDescs.push_back(FunctionDescription("firstBitDifferenceFromLeft",list_of(TID_INT64)(TID_INT64),TID_INT64,&int64_FirstBitDifferenceFromLeft));
 
    /*
      (shell-command-to-string "iquery -aq \"list('libraries');\" | grep -i hstm")

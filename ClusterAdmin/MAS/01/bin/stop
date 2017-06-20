@@ -1,10 +1,8 @@
 #!/bin/bash
 
-export SciDBVer=15.7
-
-echo Stop the test clusters.
-touch ./last-stop-attempt
-ls -l ./last-stop-attempt
+echo  Stop.
+# touch ./last-unload-and-stop-attempt
+# ls -l ./last-unload-and-stop-attempt
 
 # Safety exit
 export expectedHost="scidb01"
@@ -14,13 +12,22 @@ if [[ $(hostname -s) != ${expectedHost} ]]; then
 fi
 
 source managed-hosts
-source ./config-${SciDBVer}
+source ./config-15.7
+
+# echo unloading...
+# for clusterPort in ${clusterPorts}; do 
+#     echo processing ${clusterPort}
+#     iquery --port ${clusterPort} -aq "unload_library('hstmIndexLibrary');"
+# done
 
 echo stopping...
 for clusterName in ${clusterNames}; do 
     echo processing ${clusterName}
     scidb.py stopall ${clusterName}
 done
+
+echo next step...
+echo ./update-libraries
 
 echo done
 

@@ -1,10 +1,8 @@
 #!/bin/bash
 
-export SciDBVer=15.7
-
-echo Start the clusters
-touch ./last-start-attempt
-ls -l ./last-start-attempt
+echo Start the clusters. and load the plugins.
+# touch ./last-start-and-load-attempt
+# ls -l ./last-start-and-load-attempt
 
 # Safety exit
 export expectedHost="scidb01"
@@ -14,9 +12,7 @@ if [[ $(hostname -s) != ${expectedHost} ]]; then
 fi
 
 source managed-hosts
-
-# source /home/scidb/.scidbrc
-source ./config-${SciDBVer}
+source ./config-15.7
 
 echo starting...
 for clusterName in ${clusterNames}; do 
@@ -25,13 +21,10 @@ for clusterName in ${clusterNames}; do
 done
 
 # echo loading...
-# # export clusterPort="1439"
-# for clusterPort in 1439 1239; do
+# for clusterPort in ${clusterPorts}; do
 #     echo processing ${clusterPort}
 #     iquery --port ${clusterPort} -aq "load_library('hstmIndexLibrary');"
 # done
 
 echo done
-
-
 

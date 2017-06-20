@@ -18,6 +18,7 @@ echo unloading...
 for clusterPort in ${clusterPorts}; do 
     echo processing ${clusterPort}
     iquery --port ${clusterPort} -aq "unload_library('hstmIndexLibrary');"
+#    iquery --port ${clusterPort} -aq "unload_library('gridTransform');"
 done
 
 echo stopping...

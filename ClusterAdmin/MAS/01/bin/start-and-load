@@ -24,6 +24,7 @@ echo loading...
 for clusterPort in ${clusterPorts}; do
     echo processing ${clusterPort}
     iquery --port ${clusterPort} -aq "load_library('hstmIndexLibrary');"
+#    iquery --port ${clusterPort} -aq "load_library('gridTransform');"
 done
 
 echo done
