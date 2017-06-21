@@ -53,4 +53,10 @@ iquery --port 1439 -aq "build(<val:string>[i1=0:0,1,0],string(positionFromHstm(h
 echo test 5.3 FAILING lat-lon and nodeIndex out of bounds vector number
 iquery --port 1439 -aq "build(<val:string>[i1=0:0,1,0],string(positionFromHstm(hstmFromLevelLatLon(8,45.0,45.0),20,'lat')))"
 
+echo feature added latlon calc for nonunit vectors
+iquery --port 1439 -aq "build(<val: string>[i=0:0,1,0], positionFromHstm(hstmFromIndex(indexFromHstm(hstmFromLevelLatLon(11,45.0,45.0))),0,'lat'))"
+iquery --port 1439 -aq "build(<val: string>[i=0:0,1,0], positionFromHstm(hstmFromIndex(indexFromHstm(hstmFromLevelLatLon(13,45.0,45.0))),0,'lat'))"
+iquery --port 1439 -aq "build(<val: string>[i=0:0,1,0], positionFromIndex(indexFromHstm(hstmFromLevelLatLon(13,45.0,45.0)),0,'lat'))"
+iquery --port 1439 -aq "build(<val: string>[i=0:0,1,0], positionFromIndex(indexFromHstm(hstmFromLevelLatLon(13,45.0,45.0)),0,'lon'))"
+
 echo $0 done
