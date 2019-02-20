@@ -1,0 +1,22 @@
+#!/bin/bash
+
+export SciDBVer=16.9
+
+echo backing up plugins
+
+touch ./last-backup-attempt
+
+# export targetDir=/home/scidb/mrilee/Cluster32All/plugin-backups/`/home/mrilee/bin/:date`
+export targetDir=/att/nobackup/scidb/mrilee/plugin-backups/`/home/mrilee/bin/:date`
+
+mkdir -p ${targetDir}
+
+cp \
+   /opt/scidb/${SciDBVer}/lib/scidb/plugins/libhstmIndexLibrary.so \
+   /opt/scidb/${SciDBVer}/lib/scidb/plugins/libgridTransform.so \
+   ${targetDir}
+
+echo next step...
+echo ./unload-and-stop
+
+

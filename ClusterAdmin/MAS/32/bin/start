@@ -1,0 +1,37 @@
+#!/bin/bash
+
+export SciDBVer=16.9
+
+echo Start the clusters
+touch ./last-start-attempt
+ls -l ./last-start-attempt
+
+# Safety exit
+export expectedHost="scidb32"
+if [[ $(hostname -s) != ${expectedHost} ]]; then 
+   echo Executing on wrong cluster, found: $(hostname -s), expected: ${expectedHost}. Exiting.
+   exit
+fi
+
+source managed-hosts
+
+# source /home/scidb/.scidbrc
+source ./config-${SciDBVer}
+
+echo starting...
+for clusterName in ${clusterNames}; do 
+    echo processing ${clusterName}
+    scidb.py startall ${clusterName}
+done
+
+# echo loading...
+# # export clusterPort="1439"
+# for clusterPort in 1439 1239; do
+#     echo processing ${clusterPort}
+#     iquery --port ${clusterPort} -aq "load_library('hstmIndexLibrary');"
+# done
+
+echo done
+
+
+

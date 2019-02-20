@@ -1,0 +1,51 @@
+#!/bin/bash
+
+if [ "$#" -ne 1 ]; then
+    echo usage: start ClusterNumber
+    echo   e.g. start 29
+    exit
+fi
+
+export SciDBVer=16.9
+# export ClusterNumber=29
+export ClusterNumber="$1"
+export ClusterName=scidb${ClusterNumber}
+# export ClusterScriptHome=/home/scidb/mrilee/Cluster${ClusterNumber}All
+# export ClusterScriptBin=${ClusterScriptHome}/bin
+export ClusterScriptBin=`pwd`
+
+echo Stop the clusters
+touch ${ClusterScriptBin}/last-stop-attempt
+ls -l ${ClusterScriptBin}/last-stop-attempt
+
+# Safety exit
+# export expectedHost="scidb32"
+export expectedHost="scidb29"
+if [[ $(hostname -s) != ${expectedHost} ]]; then 
+   echo Executing on wrong cluster, found: $(hostname -s), expected: ${expectedHost}. Exiting.
+   exit
+fi
+
+source managed-hosts
+
+# source /home/scidb/.scidbrc
+source ${ClusterScriptBin}/config-${SciDBVer}
+
+
+echo stopping...
+for clusterName in ${clusterNames}; do 
+    echo processing ${clusterName}
+    scidb.py stopall ${clusterName}
+done
+
+# echo loading...
+# # export clusterPort="1439"
+# for clusterPort in 1439 1239; do
+#     echo processing ${clusterPort}
+#     iquery --port ${clusterPort} -aq "load_library('hstmIndexLibrary');"
+# done
+
+echo done
+
+
+

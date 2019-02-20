@@ -1,0 +1,72 @@
+
+;; -*- Mode: Emacs-lisp; -*-
+
+Notes on how to run these scripts.
+
+1. The following order should work.
+
+./backup-plugins
+./unload-and-stop
+./update-libraries
+./start-and-load
+
+# Try C-xC-j.
+
+(switch-to-buffer-other-window "*Messages*")
+
+(mlr-shell-command-to-string "config-15.7" "pwd")
+(mlr-shell-command-to-string "config-15.7" "ls")
+(mlr-shell-command-to-string "config-15.7" "scidb.py")
+
+(mlr-shell-command-to-string "config-15.7" "yes | scidb.py initall mike")
+
+(mlr-shell-command-to-string "config-15.7" "./check-hstm 1239")
+
+(mlr-shell-command-to-string "config-15.7" "./backup-plugins")
+(mlr-shell-command-to-string "config-15.7" "./unload-and-stop")
+(mlr-shell-command-to-string "config-15.7" "./update-libraries")
+(mlr-shell-command-to-string "config-15.7" "./start-and-load")
+
+(mlr-shell-command-to-string "config-15.7" "/home/scidb/mrilee/Cluster32All/bin/initial-load")
+
+;;; Most used
+(mlr-shell-command-to-string
+ "config-15.7"
+ (concat "date; "
+	 "./unload-and-stop; ./update-libraries; ./start-and-load; date "))
+
+(mlr-shell-command-to-string
+ "config-15.7"
+ (concat "date; "
+	 "./unload-and-stop; ./start-and-load; date "))
+
+(mlr-shell-command-to-string
+ "config-15.7"
+ (concat "date; "
+	 "./stop; ./start; date "))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(mlr-shell-command-to-string "config-15.7" 
+			     "./stop; ./start;")
+
+(mlr-shell-command-to-string "config-15.7" "./stop;")
+(mlr-shell-command-to-string "config-15.7" "./start;")
+
+
+(mlr-shell-command-to-string "config-15.7" "iquery -p 1239 -aq \"list('arrays');\"")
+
+(mlr-shell-command-to-string "config-15.7" "iquery -p 1239 -aq \"list('libraries');\"")
+
+(mlr-shell-command-to-string "config-15.7" "iquery -p 1239 -aq \" list( 'functions' ); \" ")
+(shell-command-to-string "source config-15.7; iquery -p 1239 -aq \" list( 'functions' ); \" ")
+
+(find-file-other-window "/att/scidb/data01/")
+(find-file-other-window "/att/scidb/data01/db_drchs/000/0/")
+(find-file-other-window "/att/scidb/data01/db_drchs/000/0/scidb.log")
+(find-file-other-window "/att/scidb/data01/db_drchs/000/1/scidb.log")
+
+(find-file-other-window "/opt/scidb/15.7/etc/config.ini")
+(find-file-other-window "/opt/scidb/15.7/share/scidb/log4cxx.properties")
+

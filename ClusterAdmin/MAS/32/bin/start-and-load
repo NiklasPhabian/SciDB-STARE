@@ -1,0 +1,35 @@
+#!/bin/bash
+
+echo Start the test clusters and load the plugins.
+touch ./last-start-and-load-attempt
+ls -l ./last-start-and-load-attempt
+
+# Safety exit
+export expectedHost="scidb32"
+if [[ $(hostname -s) != ${expectedHost} ]]; then 
+   echo Executing on wrong cluster, found: $(hostname -s), expected: ${expectedHost}. Exiting.
+   exit
+fi
+
+source managed-hosts
+#source /home/scidb/.scidbrc
+source ./config-16.9
+# source ./config-16.9-mike1
+
+echo starting...
+# for clusterName in mike1_169; do 
+for clusterName in ${clusterNames}; do 
+    echo processing ${clusterName}
+    scidb.py startall ${clusterName}
+done
+
+echo loading...
+# export clusterPort="1439"
+for clusterPort in ${clusterPorts}; do
+    echo processing ${clusterPort}
+    iquery --port ${clusterPort} -aq "load_library('hstmIndexLibrary');"
+    iquery --port ${clusterPort} -aq "load_library('gridTransform');"
+done
+
+echo done
+

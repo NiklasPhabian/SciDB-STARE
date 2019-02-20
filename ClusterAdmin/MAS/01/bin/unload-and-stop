@@ -1,0 +1,34 @@
+#!/bin/bash
+
+echo Unload the plugins and stop.
+touch ./last-unload-and-stop-attempt
+ls -l ./last-unload-and-stop-attempt
+
+# Safety exit
+export expectedHost="scidb01"
+if [[ $(hostname -s) != ${expectedHost} ]]; then 
+   echo Executing on wrong cluster, found: $(hostname -s), expected: ${expectedHost}. Exiting.
+   exit
+fi
+
+source managed-hosts
+source ./config-15.7
+
+echo unloading...
+for clusterPort in ${clusterPorts}; do 
+    echo processing ${clusterPort}
+    iquery --port ${clusterPort} -aq "unload_library('hstmIndexLibrary');"
+#    iquery --port ${clusterPort} -aq "unload_library('gridTransform');"
+done
+
+echo stopping...
+for clusterName in ${clusterNames}; do 
+    echo processing ${clusterName}
+    scidb.py stopall ${clusterName}
+done
+
+echo next step...
+echo ./update-libraries
+
+echo done
+

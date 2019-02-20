@@ -1,4 +1,12 @@
 # Ignoring
 2016-0831-2332-Shell-HstmLibraryCompile-1
 *~
+*.o
+*.so
+Makefile-orig
+Makefile
+\#*
+.\#*
+ClusterAdmin/MAS/01/bin/last-start-and-load-attempt
+ClusterAdmin/MAS/01/bin/last-unload-and-stop-attempt
 

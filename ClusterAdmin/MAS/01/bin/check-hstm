@@ -1,0 +1,6 @@
+#!/bin/bash
+
+iquery --port $1 -a -q "list('arrays');" | grep -i hstm
+
+# iquery --port $1 -a -q "list('arrays');" | grep -i double
+

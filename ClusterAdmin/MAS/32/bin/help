@@ -1,0 +1,31 @@
+#!/usr/bin/perl -w
+
+print "
+Notes on how to run these scripts.
+
+1. The following order should work.
+
+./backup-plugins
+./unload-and-stop
+./update-libraries
+./start-and-load
+
+(shell-command-to-string "pwd")
+(shell-command-to-string "ls")
+(shell-command-to-string "/home/scidb/mrilee/Cluster32All/bin/backup-plugins")
+(shell-command-to-string "/home/scidb/mrilee/Cluster32All/bin/unload-and-stop")
+(shell-command-to-string "/home/scidb/mrilee/Cluster32All/bin/update-libraries")
+(shell-command-to-string "/home/scidb/mrilee/Cluster32All/bin/start-and-load")
+
+# Try C-xC-j.
+# (find-file-other-window \"/home/scidb/mrilee/Cluster32All/bin\")
+
+# (find-file-other-window \"/opt/scidb/16.9/etc/config.ini\")
+# (find-file-other-window \"/opt/scidb/16.9/share/scidb/log4cxx.properties\")
+
+# (find-file-other-window \"/att/scidb/data01/db_mike\")
+# (find-file-other-window \"/att/scidb/data01/db_mike/000/0/\")
+# (find-file-other-window \"/att/scidb/data01/db_mike/000/0/scidb.log\")
+
+";
+

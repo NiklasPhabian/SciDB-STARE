@@ -1,0 +1,77 @@
+
+;; -*- Mode: Emacs-lisp; -*-
+
+Notes on how to run these scripts.
+
+1. The following order should work.
+
+./backup-plugins
+./unload-and-stop
+./update-libraries
+./start-and-load
+
+# Try C-xC-j.
+
+(switch-to-buffer-other-window "*Messages*")
+
+(mlr-shell-command-to-string "config-16.9" "pwd")
+(mlr-shell-command-to-string "config-16.9" "ls")
+(mlr-shell-command-to-string "config-16.9" "scidb.py")
+
+(mlr-shell-command-to-string "config-16.9" "yes | scidb.py initall mike")
+
+(mlr-shell-command-to-string "config-16.9" "./check-hstm 1239")
+(mlr-shell-command-to-string "config-16.9" "./check-hstm 1439")
+(mlr-shell-command-to-string "config-16.9" "./check-hstm 1539")
+
+(mlr-shell-command-to-string "config-16.9" "./backup-plugins")
+(mlr-shell-command-to-string "config-16.9" "./unload-and-stop")
+(mlr-shell-command-to-string "config-16.9" "./update-libraries")
+(mlr-shell-command-to-string "config-16.9" "./start-and-load")
+
+(mlr-shell-command-to-string "config-16.9" "/home/scidb/mrilee/Cluster32All/bin/initial-load")
+
+;;; Most used
+(mlr-shell-command-to-string
+ "config-16.9"
+ (concat "date; "
+	 "./unload-and-stop; ./update-libraries; ./start-and-load; date "))
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(mlr-shell-command-to-string "config-16.9" 
+			     "./stop; ./start;")
+
+(mlr-shell-command-to-string "config-16.9" "./stop;")
+(mlr-shell-command-to-string "config-16.9" "./start;")
+
+
+(mlr-shell-command-to-string "config-16.9" "iquery -p 1239 -aq \"list('arrays');\"")
+(mlr-shell-command-to-string "config-16.9" "iquery -p 1439 -aq \"list('arrays');\"")
+
+(mlr-shell-command-to-string "config-16.9" "iquery -p 1239 -aq \"list('libraries');\"")
+(mlr-shell-command-to-string "config-16.9" "iquery -p 1439 -aq \"list('libraries');\"")
+(mlr-shell-command-to-string "config-16.9" "iquery -p 1539 -aq \"list('libraries');\"")
+
+(mlr-shell-command-to-string "config-16.9" "iquery -p 1539 -aq \" list( 'functions' ); \" ")
+(shell-command-to-string "source config-16.9; iquery -p 1539 -aq \" list( 'functions' ); \" ")
+
+(mlr-shell-command-to-string "config-16.9" "cd /home/scidb/mrilee/Cluster32All/bin; ./stop; ./start;")
+
+(find-file-other-window "/att/scidb/data01/db_mike1_169/0/0/scidb.log")
+
+(find-file-other-window "/home/scidb/mrilee/Cluster32All/bin")
+
+(find-file-other-window "/opt/scidb/16.9/etc/config.ini")
+(find-file-other-window "/opt/scidb/16.9/share/scidb/log4cxx.properties")
+
+(find-file-other-window "/att/scidb/data01/")
+
+(find-file-other-window "/att/scidb/data01/db_mike1_169")
+(find-file-other-window "/att/scidb/data01/db_mike1_169/0/0/")
+(find-file-other-window "/att/scidb/data01/db_mike1_169/0/0/scidb.log")
+
+

@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Safety exit
+export expectedHost="scidb01"
+if [[ $(hostname -s) != ${expectedHost} ]]; then 
+   echo Executing on wrong cluster, found: $(hostname -s), expected: ${expectedHost}. Exiting.
+   exit
+fi
+
+export clusterPorts="1239"
+export clusterNames="drchs"
+
