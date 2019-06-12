@@ -5,11 +5,13 @@
 if [ 1 == 1 ]; then
 
 echo basic sketch
-iquery --port 1439 -aq \
+iquery --port 1239 -aq \
+
+iquery --port 1239 -aq \
     "build(<val: string>[i=0:0,1,0], symbol(hstmFromLevelLatLon(8,45.0,45.0)))"
 
 echo test 1
-iquery --port 1439 -aq \
+iquery --port 1239 -aq \
     "build(<val: bool>[i=0:0,1,0], 'xxx' = symbol(hstmFromLevelLatLon(8,45.0,45.0)))"
 
 echo test 2 failing string test
@@ -28,15 +30,15 @@ echo test 4.2 symbol
 assert_equal xxx "symbol(hstm('(HSTMSymbolic N3333333333333333333333333333)'))"
 
 # echo example 4.2.1
-# iquery --port 1439 -aq "build(<val: string>[i=0:0,1,0], symbol(hstm('(HSTMSymbolic N3333333333333333333333333333)')))"
-# iquery --port 1439 -aq "build(<val: string>[i=0:0,1,0], symbol(hstm('(HSTMSymbolic N3333)')))"
-# iquery --port 1439 -aq "build(<val: string>[i=0:0,1,0], symbol(hstm('(HSTMSymbolic N3333 N3333)')))"
-# iquery --port 1439 -aq "build(<val: string>[i=0:0,1,0], hstmFromLevelLatLon(8,45.0,45.0))"
-# iquery --port 1439 -aq "build(<val: string>[i=0:0,1,0], hstm('(HSTMHex x7f7ff00000000008 x7f7fffffffffffff)'))"
-# iquery --port 1439 -aq "build(<val: string>[i=0:0,1,0], index(hstm('(HSTMHex x7f7ff00000000008 x7f7fffffffffffff)')))"
+# iquery --port 1239 -aq "build(<val: string>[i=0:0,1,0], symbol(hstm('(HSTMSymbolic N3333333333333333333333333333)')))"
+# iquery --port 1239 -aq "build(<val: string>[i=0:0,1,0], symbol(hstm('(HSTMSymbolic N3333)')))"
+# iquery --port 1239 -aq "build(<val: string>[i=0:0,1,0], symbol(hstm('(HSTMSymbolic N3333 N3333)')))"
+# iquery --port 1239 -aq "build(<val: string>[i=0:0,1,0], hstmFromLevelLatLon(8,45.0,45.0))"
+# iquery --port 1239 -aq "build(<val: string>[i=0:0,1,0], hstm('(HSTMHex x7f7ff00000000008 x7f7fffffffffffff)'))"
+# iquery --port 1239 -aq "build(<val: string>[i=0:0,1,0], index(hstm('(HSTMHex x7f7ff00000000008 x7f7fffffffffffff)')))"
 
-# iquery --port 1439 -aq "build(<val: string>[i=0:0,1,0], level(hstm('(HSTMHex x7f7ff00000000008 x7f7fffffffffffff)')))"
-# iquery --port 1439 -aq "build(<val: int64>[i=0:0,1,0],positionFromHstm(hstmFromLevelLatLon(8,45.0,45.0),0,'lat'));"
+# iquery --port 1239 -aq "build(<val: string>[i=0:0,1,0], level(hstm('(HSTMHex x7f7ff00000000008 x7f7fffffffffffff)')))"
+# iquery --port 1239 -aq "build(<val: int64>[i=0:0,1,0],positionFromHstm(hstmFromLevelLatLon(8,45.0,45.0),0,'lat'));"
 
 fi
 
@@ -48,15 +50,15 @@ echo test 5.1 lat-lon and nodeIndex
 assert_equal "45.1468735700533" "string(positionFromHstm(hstmFromLevelLatLon(8,45.0,45.0),0,'lat'))"
 
 echo test 5.2 FAILING lat-lon and nodeIndex bad parameter lati
-iquery --port 1439 -aq "build(<val:string>[i1=0:0,1,0],string(positionFromHstm(hstmFromLevelLatLon(8,45.0,45.0),0,'lati')))"
+iquery --port 1239 -aq "build(<val:string>[i1=0:0,1,0],string(positionFromHstm(hstmFromLevelLatLon(8,45.0,45.0),0,'lati')))"
 
 echo test 5.3 FAILING lat-lon and nodeIndex out of bounds vector number
-iquery --port 1439 -aq "build(<val:string>[i1=0:0,1,0],string(positionFromHstm(hstmFromLevelLatLon(8,45.0,45.0),20,'lat')))"
+iquery --port 1239 -aq "build(<val:string>[i1=0:0,1,0],string(positionFromHstm(hstmFromLevelLatLon(8,45.0,45.0),20,'lat')))"
 
 echo feature added latlon calc for nonunit vectors
-iquery --port 1439 -aq "build(<val: string>[i=0:0,1,0], positionFromHstm(hstmFromIndex(indexFromHstm(hstmFromLevelLatLon(11,45.0,45.0))),0,'lat'))"
-iquery --port 1439 -aq "build(<val: string>[i=0:0,1,0], positionFromHstm(hstmFromIndex(indexFromHstm(hstmFromLevelLatLon(13,45.0,45.0))),0,'lat'))"
-iquery --port 1439 -aq "build(<val: string>[i=0:0,1,0], positionFromIndex(indexFromHstm(hstmFromLevelLatLon(13,45.0,45.0)),0,'lat'))"
-iquery --port 1439 -aq "build(<val: string>[i=0:0,1,0], positionFromIndex(indexFromHstm(hstmFromLevelLatLon(13,45.0,45.0)),0,'lon'))"
+iquery --port 1239 -aq "build(<val: string>[i=0:0,1,0], positionFromHstm(hstmFromIndex(indexFromHstm(hstmFromLevelLatLon(11,45.0,45.0))),0,'lat'))"
+iquery --port 1239 -aq "build(<val: string>[i=0:0,1,0], positionFromHstm(hstmFromIndex(indexFromHstm(hstmFromLevelLatLon(13,45.0,45.0))),0,'lat'))"
+iquery --port 1239 -aq "build(<val: string>[i=0:0,1,0], positionFromIndex(indexFromHstm(hstmFromLevelLatLon(13,45.0,45.0)),0,'lat'))"
+iquery --port 1239 -aq "build(<val: string>[i=0:0,1,0], positionFromIndex(indexFromHstm(hstmFromLevelLatLon(13,45.0,45.0)),0,'lon'))"
 
 echo $0 done

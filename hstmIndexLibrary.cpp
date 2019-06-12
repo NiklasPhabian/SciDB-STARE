@@ -633,6 +633,7 @@ static void constructDefaultHstmIndex (const scidb::Value** args, scidb::Value* 
   int64_t nranges = ((HstmIndex*)res->data())->range->nranges();
   //MLR// LOG4CXX_DEBUG(logger, L"hstm::constructDefaultHstmIndex    nr: " << (nranges));
 }
+
 static void constructHstmIndexFromInt64 (const scidb::Value** args, scidb::Value* res, void* v) {
   int     iarg       = 0;
   int64_t id         = args[iarg++]->getInt64(); // uint64?
@@ -653,6 +654,7 @@ static void constructHstmIndexFromInt64 (const scidb::Value** args, scidb::Value
   *(HstmIndex*)res->data() = *hIndex;
   //MLR// LOG4CXX_DEBUG(logger, L"hstm::constructHstmIndexFromInt64 " << 100);
 }
+
 static void constructHstmIndexFromInt642 (const scidb::Value** args, scidb::Value* res, void* v) {
   int     iarg       = 0;
   int64_t lo         = args[iarg++]->getInt64(); // uint64?
@@ -674,6 +676,7 @@ static void constructHstmIndexFromInt642 (const scidb::Value** args, scidb::Valu
   *(HstmIndex*)res->data() = *hIndex;
   //MLR// LOG4CXX_DEBUG(logger, L"hstm::constructHstmIndexFromInt642 " << 100);
 }
+
 static void constructHstmIndexFromStringSymbol (const scidb::Value** args, scidb::Value* res, void* v) {
   int     iarg       = 0;
   //  int64_t id         = args[iarg++]->getInt64(); // uint64?
