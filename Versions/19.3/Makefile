@@ -56,9 +56,7 @@ tests.x: $(OBJS) $(OBJS_CPP) tests.cpp.o
 #       -L/opt/rh/devtoolset-2/root/usr/lib/gcc/x86_64-redhat-linux/4.8.2 \
 #       -lstdc++ -lsupc++ \
 
-
 #       $(CXX) $(CFLAGS) $(INC) -o libccl.so \
-
 # x: hstmIndex.cpp.o
 #       $(CXX) $(CFLAGS) $(INC) -o $@ $< \
 #       -L$(HSTM_DIR)/unix -lhstm
@@ -79,4 +77,4 @@ echo:
 	@echo SRCS: $(SRCS)
 	@echo OBJS: $(OBJS)
 	@echo SRCS_CPP: $(SRCS_CPP)
-	@echo OBJS_CPP: $(OBJS_CPP)
+	@echo OBJS_CPP: $(OBJS_CPP) 
