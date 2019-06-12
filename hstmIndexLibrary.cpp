@@ -813,8 +813,8 @@ EXPORTED_FUNCTION const vector<FunctionDescription>& GetFunctions() {
   return _functionDescs;
 }
 
-vector<AggregatePtr> _aggregates;
-EXPORTED_FUNCTION const vector<AggregatePtr>& GetAggregates() {
+vector<std::shared_ptr<Aggregate> > _aggregates;
+EXPORTED_FUNCTION const vector<std::shared_ptr<Aggregate> >& GetAggregates() {
   return _aggregates;
 }
 
