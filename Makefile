@@ -5,8 +5,8 @@ BOOST_INCLUDE=/usr/include/boost169/
 BOOST_LIB=${BOOST_LOCATION}/lib
 
 SCIDB_SOURCE_DIR=/home/griessbaum/Downloads/scidb-19.3.1.3a5c8419/
-STARE_BUILD=/home/griessbaum/Dropbox/UCSB/STARE_Project/STARE_build/
-STARE_SRC=/home/griessbaum/Dropbox/UCSB/STARE_Project/STARE/
+STARE_BUILD=/home/griessbaum/STARE_build/
+STARE_SRC=/home/griessbaum/STARE/
 
 
 SRCS := $(wildcard *.c)
