@@ -3,7 +3,7 @@
 #define INCLUDE_HSTMINDEX_LIBRARY_H_
 
 // From hstm...
-#include "HstmIndex.h"
+#include "STARE.h.in"
 
 #include "log4cxx/logger.h"
 #include "log4cxx/basicconfigurator.h"
@@ -12,6 +12,10 @@
 #include <vector>
 #include <boost/assign.hpp>
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 03d29e05618848ed0f69271c40bc842d0ef3ab64
 #include "query/FunctionLibrary.h"
 #include "query/FunctionDescription.h"
 #include "query/TypeSystem.h"
@@ -24,11 +28,11 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-namespace hstm {
+namespace stare {
 
   void stringToHstm (const scidb::Value** args, scidb::Value* res, void* v);
 
-  static LoggerPtr logger(Logger::getLogger("hstm"));
+  static LoggerPtr logger(Logger::getLogger("stare"));
 
 /*
 void hstmFromLevelXYZ (const Value** arg, Value* res, void* v);
