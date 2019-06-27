@@ -17,7 +17,7 @@ OBJS_CPP := $(SRCS_CPP:.cpp=.cpp.o)
 
 CFLAGS= -O2 -fPIC -std=gnu++14
 INC=    -I. -I../adjacency \
-        -I$(STARE_DIR)/include \
+        -I$(STARE_SRC)/include \
         -DPROJECT_ROOT="\"$(SCIDB_SOURCE_DIR)\"" \
         -I"$(SCIDB_SOURCE_DIR)/include" -I"$(BOOST_INCLUDE)"
 

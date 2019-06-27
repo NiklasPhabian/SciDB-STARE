@@ -3,7 +3,7 @@
 #define INCLUDE_HSTMINDEX_LIBRARY_H_
 
 // From hstm...
-#include "STARE.h.in"
+#include "STARE.h"
 
 #include "log4cxx/logger.h"
 #include "log4cxx/basicconfigurator.h"
