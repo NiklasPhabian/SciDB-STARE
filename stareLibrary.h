@@ -1,8 +1,3 @@
-
-#ifndef INCLUDE_HSTMINDEX_LIBRARY_H_
-#define INCLUDE_HSTMINDEX_LIBRARY_H_
-
-// From hstm...
 #include "STARE.h"
 
 #include "log4cxx/logger.h"
@@ -11,11 +6,6 @@
 
 #include <vector>
 #include <boost/assign.hpp>
-
-<<<<<<< HEAD
-=======
-
->>>>>>> 03d29e05618848ed0f69271c40bc842d0ef3ab64
 #include "query/FunctionLibrary.h"
 #include "query/FunctionDescription.h"
 #include "query/TypeSystem.h"
@@ -25,7 +15,8 @@
 
 #include "SciDBAPI.h"
 
-using namespace log4cxx;
+
+
 using namespace log4cxx::helpers;
 
 namespace stare {

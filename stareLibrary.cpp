@@ -1,6 +1,4 @@
-
 #include "stareLibrary.h"
-
 
 #include <string>
 #include <sstream>
