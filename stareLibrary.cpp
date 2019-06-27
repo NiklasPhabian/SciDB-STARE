@@ -73,7 +73,7 @@ public:
     // REGISTER_FUNCTION(hstmFromLevelLatLon,list_of("int64")("double")("double"),"hstm",hstmFromLevelLatLon);
    _functionDescs.push_back(FunctionDescription("stareFromLevelLatLon",
                                                 list_of(TID_INT64)(TID_DOUBLE)(TID_DOUBLE),
-                                                TypeId("hstm"),
+                                                TypeId("stare"),
                                                 &stareFromLevelLatLon));
    
 
