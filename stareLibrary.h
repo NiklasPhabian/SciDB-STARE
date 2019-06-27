@@ -12,10 +12,15 @@
 #include <vector>
 #include <boost/assign.hpp>
 
+<<<<<<< HEAD
+=======
 
+>>>>>>> 03d29e05618848ed0f69271c40bc842d0ef3ab64
 #include "query/FunctionLibrary.h"
 #include "query/FunctionDescription.h"
 #include "query/TypeSystem.h"
+#include "query/PhysicalOperator.h"
+
 #include "system/ErrorsLibrary.h"
 
 #include "SciDBAPI.h"

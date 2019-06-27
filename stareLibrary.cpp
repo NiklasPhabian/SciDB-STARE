@@ -56,6 +56,7 @@ EXPORTED_FUNCTION const vector<FunctionDescription>& GetFunctions() {
   return _functionDescs;
 }
 
+
 static class HstmIndexLibrary {
 public:
   HstmIndexLibrary() {

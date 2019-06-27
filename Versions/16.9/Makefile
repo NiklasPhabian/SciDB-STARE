@@ -1,24 +1,13 @@
 
 .PHONY: tests echo
 
-# # Original configuration for 15.7
-# BOOST_LOCATION=/opt/scidb/15.7/3rdparty/boost_1_54_0
-# BOOST_INCLUDE=${BOOST_LOCATION}/include
-# BOOST_LIB=${BOOST_LOCATION}/lib
-# # BOOST_INCLUDE=/opt/scidb/15.7/3rdparty/boost_1_54_0/
-# # SCIDB_SOURCE_DIR=/home/mrilee/src/scidb-15.7.0.9267
-# SCIDB_SOURCE_DIR=/opt/scidb/15.7
-
-# /opt/scidb/16.9/3rdparty
-
-ALT_BASE=/home/mrilee/nobackup
-BOOST_LOCATION=${ALT_BASE}/opt/scidb/16.9/3rdparty/boost_1_54_0
-BOOST_INCLUDE=${BOOST_LOCATION}/include
+BOOST_LOCATION=/opt/scidb/19.3/3rdparty/boost/
+BOOST_INCLUDE=/usr/include/boost169/
 BOOST_LIB=${BOOST_LOCATION}/lib
-SCIDB_SOURCE_DIR=${ALT_BASE}/opt/scidb/16.9
+SCIDB_SOURCE_DIR=/home/griessbaum/scidb/
 
+HSTM_DIR=/home/griessbaum/STARE/
 
-HSTM_DIR=/home/mrilee/git/hstm
 
 SRCS := $(wildcard *.c)
 SRCS_CPP := $(filter-out tests.cpp, $(wildcard *.cpp))
@@ -33,15 +22,15 @@ INC=	-I. -I../adjacency \
 	-I"$(SCIDB_SOURCE_DIR)/include" -I"$(BOOST_INCLUDE)"
 
 LIBS=	\
-	-L$(HSTM_DIR)/unix \
+	-L"$(HSTM_DIR)/unix" \
 	-L"$(SCIDB_SOURCE_DIR)/lib" \
-	-shared -Wl,-soname,libhstmIndexLibrary.so -L. \
-	-lhstm \
+	-shared -Wl,-soname,libSTARE.so -L. \
+	-LSTARE \
 	-lm
 
 libs: $(OBJS) $(OBJS_CPP)
 	@if test ! -d "$(SCIDB_SOURCE_DIR)"; then echo  "Error. Try:\n\nmake SCIDB_SOURCE_DIR=<PATH TO SCIDB TRUNK>"; exit 1; fi 
-	$(CXX) $(CFLAGS) $(INC) -o libhstmIndexLibrary.so \
+	$(CXX) $(CFLAGS) $(INC) -o libSTARE.so \
 		$(OBJS_CPP) $(OBJS) $(LIBS)
 
 tests: tests.x
