@@ -1,4 +1,3 @@
-
 #include "hstmIndexLibrary.h"
 
 // include log4cxx header files
