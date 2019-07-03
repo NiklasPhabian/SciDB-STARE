@@ -2,6 +2,8 @@
 #define INCLUDE_HSTMINDEX_LIBRARY_H_
 
 #include "STARE.h"
+#include "HstmIndex.h"
+
 
 #include "log4cxx/logger.h"
 #include "log4cxx/basicconfigurator.h"

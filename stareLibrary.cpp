@@ -24,25 +24,32 @@ using namespace boost::assign;
 
 enum
   {
-    HSTM_ERROR1 = SCIDB_USER_ERROR_CODE_START
+    STARE_ERROR1 = SCIDB_USER_ERROR_CODE_START
   };
 
 
-static STARE _stareIndex;
+static STARE _stareIndex = STARE();
 
 static void stareFromLevelLatLon(const scidb::Value** args, scidb::Value* res, void* v) {
     int     iarg       = 0;
     int64_t depth      = args[iarg++]->getInt64();
     float64 latDegrees = args[iarg++]->getDouble();
-    float64 lonDegrees = args[iarg++]->getDouble();
-        
-    uint64 id = _stareIndex.ValueFromLatLonDegrees(latDegrees, lonDegrees, depth);
+    float64 lonDegrees = args[iarg++]->getDouble();   
     
-
-    // hIndex->range->addRange(1,1);
-    //*(STARE*)res->data() = *hIndex;
-
+    STARE stareIndex;
+    STARE_ArrayIndexSpatialValue id = stareIndex.ValueFromLatLonDegrees(latDegrees, lonDegrees, depth);            
+    *(STARE_ArrayIndexSpatialValue*)res->data() = id;
 }
+
+static void stareToString (const scidb::Value** args, scidb::Value* res, void* v) {      
+    STARE_ArrayIndexSpatialValue& id = *(STARE_ArrayIndexSpatialValue*)args[0]->data();        
+    LOG4CXX_INFO(stare::logger, "STARE idx: " <<id);
+    res->setString(to_string(id));  
+}
+
+
+REGISTER_CONVERTER(stare,string,EXPLICIT_CONVERSION_COST,stareToString);
+
 
 vector<Type> _types;
 EXPORTED_FUNCTION const vector<Type>& GetTypes() {
@@ -55,34 +62,27 @@ EXPORTED_FUNCTION const vector<FunctionDescription>& GetFunctions() {
 }
 
 
-static class HstmIndexLibrary {
+static class stareLibrary {
 public:
-  HstmIndexLibrary() {
+  stareLibrary() {
 
     // BasicConfigurator::configure();
     LOG4CXX_INFO(stare::logger, "Entering constructor.");
 
-    Type hstmType("stare",sizeof(STARE)*8); // size in bits
-    _types.push_back(hstmType);
-
-    // Functions registered with SciDB.
-    // void funX(const scidb::Value** args, scidb::Value* res, void*) {}
-    // REGISTER_FUNCTION(funX, list_of("argtype1")("argtype2"), "returntype", functionRef);
-
-    // hstmFromLevelLatLon (level,degrees,degrees toh stm index)
-    // REGISTER_FUNCTION(hstmFromLevelLatLon,list_of("int64")("double")("double"),"hstm",hstmFromLevelLatLon);
+    Type stareType("stare",sizeof(STARE)*8); // size in bits
+    _types.push_back(stareType);
+    
    _functionDescs.push_back(FunctionDescription("stareFromLevelLatLon",
                                                 list_of(TID_INT64)(TID_DOUBLE)(TID_DOUBLE),
-                                                TypeId("stare"),
+                                                TypeId("int64"),
                                                 &stareFromLevelLatLon));
    
-
-    _errors[HSTM_ERROR1] = "HSTM construction error.";
-    scidb::ErrorsLibrary::getInstance()->registerErrors("hstm",&_errors);
+    _errors[STARE_ERROR1] = "STARE construction error.";
+    scidb::ErrorsLibrary::getInstance()->registerErrors("stare",&_errors);
   }
 
-  ~HstmIndexLibrary() {
-    scidb::ErrorsLibrary::getInstance()->unregisterErrors("hstm");
+  ~stareLibrary() {
+    scidb::ErrorsLibrary::getInstance()->unregisterErrors("stare");
   }
 
   private:
