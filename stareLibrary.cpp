@@ -28,7 +28,7 @@ enum
   };
 
 
-static STARE _stareIndex = STARE();
+static STARE stareIndex = STARE();
 
 static void stareFromLevelLatLon(const scidb::Value** args, scidb::Value* res, void* v) {
     int     iarg       = 0;
@@ -36,7 +36,7 @@ static void stareFromLevelLatLon(const scidb::Value** args, scidb::Value* res, v
     float64 latDegrees = args[iarg++]->getDouble();
     float64 lonDegrees = args[iarg++]->getDouble();   
     
-    STARE stareIndex;
+    //STARE stareIndex;
     STARE_ArrayIndexSpatialValue id = stareIndex.ValueFromLatLonDegrees(latDegrees, lonDegrees, depth);            
     *(STARE_ArrayIndexSpatialValue*)res->data() = id;
 }
