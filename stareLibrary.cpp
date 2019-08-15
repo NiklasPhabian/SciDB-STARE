@@ -27,28 +27,26 @@ enum
     STARE_ERROR1 = SCIDB_USER_ERROR_CODE_START
   };
 
-
-static STARE stareIndex = STARE();
+STARE stareIndex;
 
 static void stareFromLevelLatLon(const scidb::Value** args, scidb::Value* res, void* v) {
     int     iarg       = 0;
-    int64_t depth      = args[iarg++]->getInt64();
     float64 latDegrees = args[iarg++]->getDouble();
-    float64 lonDegrees = args[iarg++]->getDouble();   
-    
-    //STARE stareIndex;
-    STARE_ArrayIndexSpatialValue id = stareIndex.ValueFromLatLonDegrees(latDegrees, lonDegrees, depth);            
+    float64 lonDegrees = args[iarg++]->getDouble();
+    int64_t depth      = args[iarg++]->getInt64();
+
+    STARE_ArrayIndexSpatialValue id = stareIndex.ValueFromLatLonDegrees(latDegrees, lonDegrees, depth);
     *(STARE_ArrayIndexSpatialValue*)res->data() = id;
 }
 
-static void stareToString (const scidb::Value** args, scidb::Value* res, void* v) {      
-    STARE_ArrayIndexSpatialValue& id = *(STARE_ArrayIndexSpatialValue*)args[0]->data();        
+static void stareToString (const scidb::Value** args, scidb::Value* res, void* v) {
+    STARE_ArrayIndexSpatialValue& id = *(STARE_ArrayIndexSpatialValue*)args[0]->data();
     LOG4CXX_INFO(stare::logger, "STARE idx: " <<id);
     res->setString(to_string(id));  
 }
 
 
-REGISTER_CONVERTER(stare,string,EXPLICIT_CONVERSION_COST,stareToString);
+REGISTER_CONVERTER(stareType,string,EXPLICIT_CONVERSION_COST,stareToString);
 
 
 vector<Type> _types;
@@ -71,12 +69,11 @@ public:
 
     Type stareType("stare",sizeof(STARE)*8); // size in bits
     _types.push_back(stareType);
-    
-   _functionDescs.push_back(FunctionDescription("stareFromLevelLatLon",
-                                                list_of(TID_INT64)(TID_DOUBLE)(TID_DOUBLE),
+    _functionDescs.push_back(FunctionDescription("stareFromLevelLatLon",
+                                                list_of(TID_DOUBLE)(TID_DOUBLE)(TID_INT64),
                                                 TypeId("int64"),
                                                 &stareFromLevelLatLon));
-   
+
     _errors[STARE_ERROR1] = "STARE construction error.";
     scidb::ErrorsLibrary::getInstance()->registerErrors("stare",&_errors);
   }
