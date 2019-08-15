@@ -18,8 +18,8 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-using namespace stare;
 using namespace scidb;
+using namespace stare;
 using namespace boost::assign;
 
 enum
@@ -27,8 +27,10 @@ enum
     STARE_ERROR1 = SCIDB_USER_ERROR_CODE_START
   };
 
+
 STARE stareIndex;
 
+// Spatial
 static void stareFromLevelLatLon(const scidb::Value** args, scidb::Value* res, void* v) {
     int     iarg       = 0;
     float64 latDegrees = args[iarg++]->getDouble();
@@ -39,14 +41,39 @@ static void stareFromLevelLatLon(const scidb::Value** args, scidb::Value* res, v
     *(STARE_ArrayIndexSpatialValue*)res->data() = id;
 }
 
-static void stareToString (const scidb::Value** args, scidb::Value* res, void* v) {
-    STARE_ArrayIndexSpatialValue& id = *(STARE_ArrayIndexSpatialValue*)args[0]->data();
-    LOG4CXX_INFO(stare::logger, "STARE idx: " <<id);
-    res->setString(to_string(id));  
+// Temporal
+static void stareFromTimeStamp(const scidb::Value** args, scidb::Value* res, void* v) {
+    int iarg        = 0;
+    int year        = 2015;
+    int month       = 12;
+    int day         = 3;
+    int hour        = 4;
+    int minute      = 5;
+    int second      = 7;
+    int millisecond = 30;
+    int resolution  = 3;
+    int type        = 2;
+    STARE_ArrayIndexTemporalValue indexValue = stareIndex.ValueFromUTCDatetime(year, month, day, hour, minute, second, millisecond, resolution, type);
+    *(STARE_ArrayIndexTemporalValue*)res->data() = indexValue ;
 }
 
 
-REGISTER_CONVERTER(stareType,string,EXPLICIT_CONVERSION_COST,stareToString);
+// Converters
+static void spatialIndexValueToString (const scidb::Value** args, scidb::Value* res, void* v) {
+    STARE_ArrayIndexSpatialValue& id = *(STARE_ArrayIndexSpatialValue*)args[0]->data();
+    LOG4CXX_INFO(stare::logger, "STARE idx: " << id);
+    res->setString(to_string(id));
+}
+
+static void temporalIndexValueToString (const scidb::Value** args, scidb::Value* res, void* v) {
+    STARE_ArrayIndexTemporalValue& id = *(STARE_ArrayIndexTemporalValue*)args[0]->data();
+    LOG4CXX_INFO(stare::logger, "STARE idx: " << id);
+    res->setString(to_string(id));
+}
+
+
+REGISTER_CONVERTER(spatialIndexValue, string, EXPLICIT_CONVERSION_COST, spatialIndexValueToString);
+REGISTER_CONVERTER(temporalIndexValue, string, EXPLICIT_CONVERSION_COST, temporalIndexValueToString);
 
 
 vector<Type> _types;
@@ -67,12 +94,21 @@ public:
     // BasicConfigurator::configure();
     LOG4CXX_INFO(stare::logger, "Entering constructor.");
 
-    Type stareType("stare",sizeof(STARE)*8); // size in bits
-    _types.push_back(stareType);
+    Type spatialIndexValueType("stare", sizeof(STARE)*8);   // size in bits
+    Type temporalIndexValueType("stare", sizeof(STARE)*8);  // size in bits
+    _types.push_back(spatialIndexValueType);
+    _types.push_back(temporalIndexValueType);
+
     _functionDescs.push_back(FunctionDescription("stareFromLevelLatLon",
-                                                list_of(TID_DOUBLE)(TID_DOUBLE)(TID_INT64),
+                                                list_of(TID_INT64)(TID_DOUBLE)(TID_DOUBLE),
                                                 TypeId("int64"),
                                                 &stareFromLevelLatLon));
+
+    _functionDescs.push_back(FunctionDescription("stareFromTimeStamp",
+                                                list_of(TID_INT64),
+                                                TypeId("int64"),
+                                                &stareFromTimeStamp));
+
 
     _errors[STARE_ERROR1] = "STARE construction error.";
     scidb::ErrorsLibrary::getInstance()->registerErrors("stare",&_errors);
