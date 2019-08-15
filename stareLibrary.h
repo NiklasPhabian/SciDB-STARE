@@ -26,9 +26,6 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 
 namespace stare {
-
-  void stringToHstm (const scidb::Value** args, scidb::Value* res, void* v);
-
   static LoggerPtr logger(Logger::getLogger("stare"));
 
 /*
