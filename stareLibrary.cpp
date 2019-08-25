@@ -32,31 +32,31 @@ STARE stareIndex;
 
 // Spatial
 static void stareFromLevelLatLon(const scidb::Value** args, scidb::Value* res, void* v) {
-    int     iarg       = 0;
-    float64 latDegrees = args[iarg++]->getDouble();
-    float64 lonDegrees = args[iarg++]->getDouble();
-    int64_t depth      = args[iarg++]->getInt64();
+    float64 latDegrees = args[0]->getDouble();
+    float64 lonDegrees = args[1]->getDouble();
+    int32 resolution = args[2]->getInt32();
 
-    STARE_ArrayIndexSpatialValue id = stareIndex.ValueFromLatLonDegrees(latDegrees, lonDegrees, depth);
+    STARE_ArrayIndexSpatialValue id = stareIndex.ValueFromLatLonDegrees(latDegrees, lonDegrees, resolution);
     *(STARE_ArrayIndexSpatialValue*)res->data() = id;
 }
 
 // Temporal
-static void stareFromTimeStamp(const scidb::Value** args, scidb::Value* res, void* v) {
-    int iarg        = 0;
-    int year        = 2015;
-    int month       = 12;
-    int day         = 3;
-    int hour        = 4;
-    int minute      = 5;
-    int second      = 7;
-    int millisecond = 30;
-    int resolution  = 3;
-    int type        = 2;
-    STARE_ArrayIndexTemporalValue indexValue = stareIndex.ValueFromUTCDatetime(year, month, day, hour, minute, second, millisecond, resolution, type);
-    *(STARE_ArrayIndexTemporalValue*)res->data() = indexValue ;
+static void stareFromUTCDateTime(const scidb::Value** args, scidb::Value* res, void* v) {
+    struct tm tm;
+    int resolution = args[0]->getInt32();
+    time_t dt = args[1]->getDateTime(); // SciDB understands time_t as seconds since UNIX epoch
+    gmtime_r(&dt, &tm);			// gmtime_r converts to tm struct, which stores ...
+    tm.tm_year += 1900;			// years since 1900
+    tm.tm_mon += 1;			// and months 0-based, while STARE stores months 1-based
+
+    STARE_ArrayIndexTemporalValue indexValue = stareIndex.ValueFromUTCDatetime(tm.tm_year, tm.tm_mon, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec, 0, resolution, 2);
+    *(STARE_ArrayIndexTemporalValue*)res->data() = indexValue;
 }
 
+static void convDateTime2TimeT(const scidb::Value** args, scidb::Value* res, void*) {
+    time_t dt = args[0]->getDateTime();
+    res->setUint64(static_cast<uint64_t>(dt));
+}
 
 // Converters
 static void spatialIndexValueToString (const scidb::Value** args, scidb::Value* res, void* v) {
@@ -99,15 +99,22 @@ public:
     _types.push_back(spatialIndexValueType);
     _types.push_back(temporalIndexValueType);
 
+    _functionDescs.push_back(FunctionDescription("convDateTime2TimeT",
+                                                list_of(TID_DATETIME),
+                                                TypeId("int64"),
+                                                &convDateTime2TimeT,
+                                                (size_t) 0)); 
+
     _functionDescs.push_back(FunctionDescription("stareFromLevelLatLon",
                                                 list_of(TID_INT64)(TID_DOUBLE)(TID_DOUBLE),
                                                 TypeId("int64"),
                                                 &stareFromLevelLatLon));
 
-    _functionDescs.push_back(FunctionDescription("stareFromTimeStamp",
-                                                list_of(TID_INT64),
+    _functionDescs.push_back(FunctionDescription("stareFromUTCDateTime",
+                                                list_of(TID_DATETIME),
                                                 TypeId("int64"),
-                                                &stareFromTimeStamp));
+                                                &stareFromUTCDateTime));
+
 
 
     _errors[STARE_ERROR1] = "STARE construction error.";
