@@ -1,15 +1,12 @@
-#ifndef INCLUDE_HSTMINDEX_LIBRARY_H_
-#define INCLUDE_HSTMINDEX_LIBRARY_H_
+#ifndef INCLUDE_stareLibrary_H_
+#define INCLUDE_stareLibrary_H_
 
 #include "STARE.h"
-#include "HstmIndex.h"
-
 
 #include "log4cxx/logger.h"
 #include "log4cxx/basicconfigurator.h"
 #include "log4cxx/helpers/exception.h"
 
-#include <vector>
 #include <boost/assign.hpp>
 
 #include "query/FunctionLibrary.h"
@@ -28,8 +25,23 @@ using namespace log4cxx::helpers;
 namespace stare {
   static LoggerPtr logger(Logger::getLogger("stare"));
 
+  // Spatial
+  static void stareFromLevelLatLon(const scidb::Value** args, scidb::Value* res, void* v);
+  static void latLonFromStare(const scidb::Value** args, scidb::Value* res, void* v);
+  static void levelFromStare(const scidb::Value** args, scidb::Value* res, void* v);
+
+  // Temporal
+  static void stareFromUTCDateTime(const scidb::Value** args, scidb::Value* res, void* v);
+  static void datetimeFromStare(const scidb::Value** args, scidb::Value* res, void* v);
+  static void convDateTime2TimeT(const scidb::Value** args, scidb::Value* res, void*);
+
+  // Converters
+  static void spatialIndexValueToString(const scidb::Value** args, scidb::Value* res, void* v);
+  static void spatialIndexValueToInt64(const scidb::Value** args, scidb::Value* res, void* v);
+  static void temporalIndexValueToString(const scidb::Value** args, scidb::Value* res, void* v);
+  static void LatLonDegreesToString(const scidb::Value** args, scidb::Value* res, void* v);
+
 /*
-void hstmFromLevelXYZ (const Value** arg, Value* res, void* v);
 void symbolFromHstm (const Value** arg, Value* res, void* v);
 void hstmIntersect (const Value** arg, Value* res, void* v);
 void hstmContains (const Value** arg, Value* res, void* v);
@@ -48,4 +60,6 @@ void hstmEqualToLevel (const Value** arg, Value* res, void* v);
 
 } /* namespace hstm */
 
-#endif /* INCLUDE_HSTMINDEX_LIBRARY_H_ */
+
+
+#endif /* INCLUDE_stareLibrary_H_ */
