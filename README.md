@@ -33,10 +33,10 @@ Copyright (C) 2016-2017 M. Rilee, Rilee Systems Technologies LLC
 # Usage
 Load Libary
     iquery -aq "load_library('STARE')"
-Create an array:     
+
+Create an array:
     store(build(<lat:double>[i=0:3:1],floor(random()/2147483647.0*180)), lat);
     store(build(<lon:double>[i=0:3:1],floor(random()/2147483647.0*360)), lon);    
-    store(join(lat, lon), coordinates);
-    
+    store(join(lat, lon), coordinates);    
     apply(coordinates, hstm, stareFromLevelLatLon(12,lat, lon));
     

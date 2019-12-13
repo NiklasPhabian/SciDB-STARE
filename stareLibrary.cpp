@@ -48,14 +48,9 @@ static void constructLatLon64(const scidb::Value** args, scidb::Value* res, void
 
 // Temporal
 static void stare::stareFromUTCDateTime(const scidb::Value** args, scidb::Value* res, void* v) {
-    struct tm tm;
     int resolution = args[0]->getInt32();
-    time_t dt = args[1]->getDateTime(); // SciDB understands time_t as seconds since UNIX epoch
-    gmtime_r(&dt, &tm);			// gmtime_r converts to tm struct, which stores ...
-    tm.tm_year += 1900;			// years since 1900
-    tm.tm_mon += 1;			// and months 0-based, while STARE stores months 1-based
-
-    STARE_ArrayIndexTemporalValue indexValue = stareIndex.ValueFromUTC(tm.tm_year, tm.tm_mon, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec, 0, resolution, 2);
+    time_t datetime = args[1]->getDateTime();   // SciDB understands time_t as seconds since UNIX epoch
+    STARE_ArrayIndexTemporalValue indexValue = stareIndex.ValueFromUTC(datetime, resolution, 2);
     *(STARE_ArrayIndexTemporalValue*)res->data() = indexValue;
 }
 
@@ -83,7 +78,6 @@ static void constructStareTemporal(const scidb::Value** args, scidb::Value* res,
     STARE_ArrayIndexTemporalValue id;
     *(STARE_ArrayIndexTemporalValue*)res->data() = id;
 }
-
 
 
 // Converters
