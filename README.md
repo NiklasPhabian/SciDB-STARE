@@ -1,13 +1,10 @@
 
 # SciDB-HSTM
 
-Integrating HSTM with SciDB. All rights reserved.
-
-For ./Makefile, link or copy one of ./Versions/*/Makefile.
+STARE plugin for SciDB
 
 NOTE: SciDB™ is a trademark of Paradigm4.
 
-Copyright (C) 2016-2017 M. Rilee, Rilee Systems Technologies LLC
 
 
 # Get SciDB 19.3.1 sources 
@@ -32,9 +29,11 @@ Copyright (C) 2016-2017 M. Rilee, Rilee Systems Technologies LLC
 
 # Usage
 Load Libary
+
     iquery -aq "load_library('STARE')"
 
 Create an array:
+
     store(build(<lat:double>[i=0:3:1],floor(random()/2147483647.0*180)), lat);
     store(build(<lon:double>[i=0:3:1],floor(random()/2147483647.0*360)), lon);    
     store(join(lat, lon), coordinates);    
