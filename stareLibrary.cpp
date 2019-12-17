@@ -17,10 +17,10 @@ STARE stareIndex;
 
 
 // Spatial
-static void stare::stareFromLevelLatLon(const scidb::Value** args, scidb::Value* res, void* v) {
-    float64 latDegrees = args[0]->getDouble();
-    float64 lonDegrees = args[1]->getDouble();
-    int32 resolution = args[2]->getInt32();
+static void stare::stareFromResolutionLatLon(const scidb::Value** args, scidb::Value* res, void* v) {
+    int32 resolution = args[0]->getInt32();
+    float64 latDegrees = args[1]->getDouble();
+    float64 lonDegrees = args[2]->getDouble();
     STARE_ArrayIndexSpatialValue id = stareIndex.ValueFromLatLonDegrees(latDegrees, lonDegrees, resolution);
     *(STARE_ArrayIndexSpatialValue*)res->data() = id;
 }
@@ -31,7 +31,7 @@ static void stare::latLonFromStare(const scidb::Value** args, scidb::Value* res,
     *(LatLonDegrees64*)res->data() = latlon;
 };
 
-static void stare::levelFromStare(const scidb::Value** args, scidb::Value* res, void* v) {
+static void stare::resolutionFromStare(const scidb::Value** args, scidb::Value* res, void* v) {
     //TBD
 };
 
@@ -147,30 +147,30 @@ public:
     _functionDescs.push_back(FunctionDescription("STARETemporal", ArgTypes(), TypeId("STARETemporal"), &constructStareTemporal));
     _functionDescs.push_back(FunctionDescription("LatLon64", ArgTypes(), TypeId("LatLon64"), &constructLatLon64));
 
-
-    _functionDescs.push_back(FunctionDescription("stareFromLevelLatLon",
+    // Question is: Do we create a STARESpatial object or a TID_INT64 object?
+    _functionDescs.push_back(FunctionDescription("stareFromResolutionLatLon",
                                                 list_of(TID_INT64)(TID_DOUBLE)(TID_DOUBLE),
-                                                TypeId("STARESpatial"),
-                                                &stare::stareFromLevelLatLon));
+                                                TypeId(TID_INT64),
+                                                &stare::stareFromResolutionLatLon));
 
     _functionDescs.push_back(FunctionDescription("latLonFromStare",
-                                                list_of("STARESpatial"),
+                                                list_of(TID_INT64),
                                                 TypeId("LatLon64"),
                                                 &stare::latLonFromStare));
 
     _functionDescs.push_back(FunctionDescription("stareFromUTCDateTime",
                                                 list_of(TID_INT64)(TID_DATETIME),
-                                                TypeId("STARETemporal"),
+                                                TypeId(TID_INT64),
                                                 &stare::stareFromUTCDateTime));
 
     _functionDescs.push_back(FunctionDescription("convDateTime2TimeT",
                                                 list_of(TID_DATETIME),
-                                                TypeId("int64"),
+                                                TypeId(TID_INT64),
                                                 &stare::convDateTime2TimeT,
                                                 (size_t) 0)); 
 
    _functionDescs.push_back(FunctionDescription("datetimeFromStare",
-                                                list_of("STARETemporal"),
+                                                list_of(TID_INT64),
                                                 TypeId(TID_DATETIME),
                                                 &stare::datetimeFromStare,
                                                 (size_t) 0)); 

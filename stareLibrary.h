@@ -26,9 +26,9 @@ namespace stare {
   static LoggerPtr logger(Logger::getLogger("stare"));
 
   // Spatial
-  static void stareFromLevelLatLon(const scidb::Value** args, scidb::Value* res, void* v);
+  static void stareFromResolutionLatLon(const scidb::Value** args, scidb::Value* res, void* v);
   static void latLonFromStare(const scidb::Value** args, scidb::Value* res, void* v);
-  static void levelFromStare(const scidb::Value** args, scidb::Value* res, void* v);
+  static void resolutionFromStare(const scidb::Value** args, scidb::Value* res, void* v);
 
   // Temporal
   static void stareFromUTCDateTime(const scidb::Value** args, scidb::Value* res, void* v);
