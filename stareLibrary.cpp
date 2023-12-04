@@ -50,7 +50,8 @@ static void constructLatLon64(const scidb::Value** args, scidb::Value* res, void
 static void stare::stareFromUTCDateTime(const scidb::Value** args, scidb::Value* res, void* v) {
     int resolution = args[0]->getInt32();
     time_t datetime = args[1]->getDateTime();   // SciDB understands time_t as seconds since UNIX epoch
-    STARE_ArrayIndexTemporalValue indexValue = stareIndex.ValueFromUTC(datetime, resolution, 2);
+    int type = 2;
+    STARE_ArrayIndexTemporalValue indexValue = stareIndex.ValueFromUTC(datetime, resolution, type);
     *(STARE_ArrayIndexTemporalValue*)res->data() = indexValue;
 }
 
